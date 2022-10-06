@@ -1,0 +1,9 @@
+#!/bin/sh
+
+STARSHIP_HOME=$HOME/.config/starship
+[ ! -d "$STARSHIP_HOME" ] && mkdir -p "$STARSHIP_HOME"
+[ ! -f "$STARSHIP_HOME/starship.toml" ] && touch "$STARSHIP_HOME/starship.toml"
+
+export STARSHIP_CONFIG=$STARSHIP_HOME/starship.toml
+
+eval "$(starship init zsh)"
