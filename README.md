@@ -21,3 +21,5 @@
     ```
     stow zsh
     ```
+## Credit
+- [Machfiles](https://github.com/ChristianChiarulli/Machfiles/)
