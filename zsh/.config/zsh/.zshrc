@@ -14,6 +14,13 @@ unsetopt BEEP
 
 
 # completions
+
+# for brew
+if type brew &>/dev/null
+then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
 autoload -Uz compinit
 zstyle ':completion:*' menu select
 # zstyle ':completion::complete:lsof:*' menu yes select
@@ -80,3 +87,5 @@ autoload edit-command-line; zle -N edit-command-line
 export EDITOR="micro"
 export TERMINAL="kitty"
 export BROWSER="floorp"
+export PAGE="bat"
+export VISUAL="micro"
