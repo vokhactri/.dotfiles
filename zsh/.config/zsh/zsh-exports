@@ -6,4 +6,7 @@ export PATH="$HOME/.local/bin":$PATH
 export MANWIDTH=999
 export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
 
+export PNPM_HOME="/Users/trivk/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+
 eval "$(zoxide init zsh)"
