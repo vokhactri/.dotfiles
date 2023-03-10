@@ -2,4 +2,4 @@
 .zsh_history
 plugins/
 .zcompcache/
-.zsh_session/
+.zsh_sessions/
