@@ -63,7 +63,7 @@ autoload edit-command-line; zle -N edit-command-line
 
 # Environment variables set everywhere
 export EDITOR="micro"
-export TERMINAL="kitty"
-export BROWSER="floorp"
+# export TERMINAL="kitty"
+# export BROWSER="floorp"
 export PAGE="bat"
 export VISUAL="micro"
