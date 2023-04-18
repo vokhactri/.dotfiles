@@ -9,7 +9,7 @@
 1. clone repo to your `$HOME` dir
 
 ```
-  git -C $HOME clone git@github.com:vokhactri/.dotfiles.git
+  git -C $HOME clone https://github.com/vokhactri/.dotfiles.git
 ```
 
 2. go to repo directory that you've cloned
