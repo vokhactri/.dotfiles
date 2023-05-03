@@ -53,7 +53,11 @@ repos=(
 plugin-load $repos
 
 # FZF
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [ -f ~/.fzf.zsh ]; then
+  source ~/.fzf.zsh
+elif [ -x `command -v brew` ]; then
+  $(brew --prefix)/opt/fzf/install --no-bash --key-bindings --completion --no-update-rc 1> /dev/null
+fi
 
 # Clean startup prompt
 ! [ -f ~/.hushlogin ] && touch ~/.hushlogin
