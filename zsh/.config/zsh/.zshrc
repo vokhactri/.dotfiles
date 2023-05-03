@@ -55,6 +55,9 @@ plugin-load $repos
 # FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Clean startup prompt
+! [ -f ~/.hushlogin ] && touch ~/.hushlogin
+
 compinit
 
 # Edit line in vim with ctrl-e:

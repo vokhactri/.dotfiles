@@ -1,3 +1,3 @@
 # Set PATH, MANPATH, etc., for Homebrew.
-eval "$(/opt/homebrew/bin/brew shellenv)"
-eval "$(fnm env --use-on-cd)"
+[ -x `command -v brew` ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+[ -x `command -v fnm` ] && eval "$(fnm env --use-on-cd)"
