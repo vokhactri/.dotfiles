@@ -4,6 +4,5 @@ HISTSIZE=1000000
 SAVEHIST=1000000
 export PATH="$HOME/.local/bin":$PATH
 export MANWIDTH=999
-export PATH="$PATH:$(yarn global bin)"
 
 eval "$(zoxide init zsh)"

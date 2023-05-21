@@ -1,6 +1,6 @@
 #!/bin/sh
 export ZDOTDIR=$HOME/.config/zsh
-# HISTFILE=~/.zsh_history
+HISTFILE=~/.zsh_history
 setopt appendhistory
 
 # some useful options (man zshoptions)
@@ -11,6 +11,7 @@ zle_highlight=('paste:none')
 
 # beeping is annoying
 unsetopt BEEP
+unsetopt PROMPT_SP
 
 # completions
 
@@ -70,7 +71,5 @@ autoload edit-command-line; zle -N edit-command-line
 
 # Environment variables set everywhere
 export EDITOR="micro"
-# export TERMINAL="kitty"
-# export BROWSER="floorp"
 export PAGE="bat"
 export VISUAL="micro"
