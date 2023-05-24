@@ -1,9 +1,5 @@
 #!/usr/bin/env zsh
 
-# workaround for vscode terminal
-[[ -z "${XDG_CONFIG_HOME}" ]] && export XDG_CONFIG_HOME="${HOME}/.config"
-[[ -z "${ZDOTDIR}" ]] && export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
-
 # some useful options (man zshoptions)
 setopt AUTO_CD EXTENDED_GLOB NOMATCH MENU_COMPLETE
 setopt INTERACTIVE_COMMENTS
