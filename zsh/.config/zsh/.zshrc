@@ -3,25 +3,32 @@
 # workaround for vscode terminal
 [[ -z "${XDG_CONFIG_HOME}" ]] && export XDG_CONFIG_HOME="${HOME}/.config"
 [[ -z "${ZDOTDIR}" ]] && export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+HISTFILE="$HOME"/.zsh_history
+
 
 # some useful options (man zshoptions)
-setopt autocd extendedglob nomatch menucomplete
-setopt interactive_comments
+setopt AUTO_CD EXTENDED_GLOB NOMATCH MENU_COMPLETE
+setopt INTERACTIVE_COMMENTS
 stty stop undef		# Disable ctrl-s to freeze terminal.
 zle_highlight=('paste:none')
 
 # history
-setopt appendhistory
-setopt incappendhistory     # Immediately append commands to history file.
-setopt histignoredups       # Never add duplicate entries.
-setopt histignorespace      # Ignore commands that start with a space.
-setopt histreduceblanks     # Remove unnecessary blank lines.
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+
+unsetopt EXTENDED_HISTORY
 
 # beeping is annoying
-unsetopt beep
+unsetopt BEEP
 
 # remove % symbol on prompt
-unsetopt promptsp
+unsetopt PROMPT_SP
 
 # completions
 
@@ -52,7 +59,7 @@ source "$ZDOTDIR/zsh-functions"
 # Normal files to source
 zsh_add_file "zsh-exports"
 zsh_add_file "zsh-aliases"
-zsh_add_file "zsh-prompt"
+zsh_add_file "zsh-eval"
 
 # Plugins
 repos=(
