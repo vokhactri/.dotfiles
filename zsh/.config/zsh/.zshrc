@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # some useful options (man zshoptions)
 setopt autocd extendedglob nomatch menucomplete
 setopt interactive_comments
@@ -6,14 +8,16 @@ zle_highlight=('paste:none')
 
 # history
 setopt appendhistory
-setopt INC_APPEND_HISTORY    # Immediately append commands to history file.
-setopt HIST_IGNORE_ALL_DUPS  # Never add duplicate entries.
-setopt HIST_IGNORE_SPACE     # Ignore commands that start with a space.
-setopt HIST_REDUCE_BLANKS    # Remove unnecessary blank lines.
+setopt incappendhistory     # Immediately append commands to history file.
+setopt histignoredups       # Never add duplicate entries.
+setopt histignorespace      # Ignore commands that start with a space.
+setopt histreduceblanks     # Remove unnecessary blank lines.
 
 # beeping is annoying
-unsetopt BEEP
-unsetopt PROMPT_SP
+unsetopt beep
+
+# remove % symbol on prompt
+unsetopt promptsp
 
 # completions
 

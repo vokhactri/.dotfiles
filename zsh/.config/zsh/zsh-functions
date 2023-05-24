@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Function to source files if they exist
 function zsh_add_file() {
   [ -f "$ZDOTDIR/$1" ] && source "$ZDOTDIR/$1"
@@ -43,7 +45,7 @@ function plugin-load {
     fi
     if [[ ! -e $initfile ]]; then
       local -a initfiles=($plugdir/*.plugin.{z,}sh(N) $plugdir/*.{z,}sh{-theme,}(N))
-      (( $#initfiles )) || { echo >&2 "No init file found '$repo'." && continue }
+      (( $#initfiles )) || { echo >&2 "No init file found '$repo'." && continue; }
       ln -sf "${initfiles[1]}" "$initfile"
     fi
     fpath+=$plugdir
