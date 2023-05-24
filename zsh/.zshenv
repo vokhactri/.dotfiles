@@ -1,2 +1,4 @@
-export ZDOTDIR=~/.config/zsh
+export XDG_CONFIG_HOME="${HOME}/.config"
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+
 [[ -f $ZDOTDIR/.zshenv ]] && . $ZDOTDIR/.zshenv

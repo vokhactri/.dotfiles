@@ -1,8 +1,11 @@
 #!/bin/sh
-# HISTFILE="$XDG_DATA_HOME"/zsh/history
+
 HISTSIZE=1000000
-SAVEHIST=1000000
+
 export PATH="$HOME/.local/bin":$PATH
 export MANWIDTH=999
+export HISTFILE="$ZDOTDIR"/.zsh_history
 
-eval "$(zoxide init zsh)"
+export EDITOR="micro"
+export PAGE="bat"
+export VISUAL="micro"

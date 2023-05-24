@@ -1,13 +1,17 @@
 #!/bin/sh
-export ZDOTDIR=$HOME/.config/zsh
-HISTFILE=~/.zsh_history
-setopt appendhistory
 
 # some useful options (man zshoptions)
 setopt autocd extendedglob nomatch menucomplete
 setopt interactive_comments
 stty stop undef		# Disable ctrl-s to freeze terminal.
 zle_highlight=('paste:none')
+
+# history
+setopt appendhistory
+setopt INC_APPEND_HISTORY    # Immediately append commands to history file.
+setopt HIST_IGNORE_ALL_DUPS  # Never add duplicate entries.
+setopt HIST_IGNORE_SPACE     # Ignore commands that start with a space.
+setopt HIST_REDUCE_BLANKS    # Remove unnecessary blank lines.
 
 # beeping is annoying
 unsetopt BEEP
@@ -61,8 +65,3 @@ compinit
 # Edit line in vim with ctrl-e:
 autoload edit-command-line; zle -N edit-command-line
 # bindkey '^e' edit-command-line
-
-# Environment variables set everywhere
-export EDITOR="micro"
-export PAGE="bat"
-export VISUAL="micro"
