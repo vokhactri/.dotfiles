@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 [ -x "$(command -v lsd)" ] && alias ls="lsd"
 [ -x "$(command -v bat)" ] && alias cat="bat"

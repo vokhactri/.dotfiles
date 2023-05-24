@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # some useful options (man zshoptions)
 setopt autocd extendedglob nomatch menucomplete
 setopt interactive_comments

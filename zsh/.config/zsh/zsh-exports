@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 HISTSIZE=1000000
 
@@ -9,3 +9,5 @@ export HISTFILE="$ZDOTDIR"/.zsh_history
 export EDITOR="micro"
 export PAGE="bat"
 export VISUAL="micro"
+
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
