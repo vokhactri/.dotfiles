@@ -61,6 +61,7 @@ repos=(
   zsh-users/zsh-completions
   zdharma-continuum/fast-syntax-highlighting
   hlissner/zsh-autopair
+  zap-zsh/fzf
 )
 plugin-load $repos
 
