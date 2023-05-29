@@ -59,9 +59,11 @@ zsh_add_file "zsh-eval"
 repos=(
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-completions
+  zap-zsh/fzf
+  zap-zsh/fnm
   zdharma-continuum/fast-syntax-highlighting
   hlissner/zsh-autopair
-  zap-zsh/fzf
+  wintermi/zsh-lsd
 )
 plugin-load $repos
 

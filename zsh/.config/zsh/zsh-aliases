@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-[ -x "$(command -v lsd)" ] && alias ls="lsd"
 [ -x "$(command -v bat)" ] && alias cat="bat"
 [ -x "$(command -v codium)" ] && alias code="codium"
+[ -x "$(command -v nvim)" ] && alias v="nvim"
