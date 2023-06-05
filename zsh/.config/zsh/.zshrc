@@ -12,13 +12,13 @@ repos=(
   # remote plugins
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-completions
+  zdharma-continuum/fast-syntax-highlighting
+  hlissner/zsh-autopair
   wintermi/zsh-brew
-  wintermi/zsh-lsd
   zap-zsh/supercharge
   zap-zsh/fzf
   zap-zsh/fnm
-  zdharma-continuum/fast-syntax-highlighting
-  hlissner/zsh-autopair
+  zap-zsh/exa
   # local plugins
   "$ZDOTDIR/aliases.zsh"
   "$ZDOTDIR/exports.zsh"
