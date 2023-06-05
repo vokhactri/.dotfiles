@@ -1,11 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 HISTFILE="$ZDOTDIR"/.zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000
 
 export MANWIDTH=999
-export PATH="$HOME/.local/bin":$PATH
 
 export EDITOR="micro"
 export PAGE="bat"

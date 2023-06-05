@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 [ -x "$(command -v bat)" ] && alias cat="bat"
 [ -x "$(command -v codium)" ] && alias code="codium"
