@@ -1,5 +1,12 @@
-# Created by Zap installer
-[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+ZAP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zap"
+ZAP_SCRIPT="$ZAP_DIR/zap.zsh"
+ZAP_BRANCH=release-v1
+
+if [ ! -f $ZAP_SCRIPT ]; then
+  git clone -b "$ZAP_BRANCH" https://github.com/zap-zsh/zap.git "$ZAP_DIR" &> /dev/null || { echo "❌ Failed to install Zap" && return 2 }
+else
+  source "$ZAP_SCRIPT"
+fi
 
 repos=(
   # remote plugins
@@ -21,7 +28,7 @@ repos=(
 for repo in $repos; do plug $repo; done
 
 # Clean startup prompt
-! [ -f ~/.hushlogin ] && touch ~/.hushlogin
+[ ! -f ~/.hushlogin ] && touch ~/.hushlogin
 
 # Load and initialise completion system
 autoload -Uz compinit
