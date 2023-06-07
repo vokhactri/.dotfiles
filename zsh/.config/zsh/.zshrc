@@ -24,6 +24,25 @@ repos=(
   "$ZDOTDIR/exports.zsh"
   "$ZDOTDIR/eval.zsh"
 )
+mac_only_repos=(wintermi/zsh-brew)
+
+case "$(uname -s)" in
+
+Darwin)
+	# echo 'Mac OS X'
+	;;
+
+Linux)
+  for repo in $mac_only_repos; do repos=("${repos[@]/$repo}"); done
+	;;
+
+CYGWIN* | MINGW32* | MSYS* | MINGW*)
+	# echo 'MS Windows'
+	;;
+*)
+	# echo 'Other OS'
+	;;
+esac
 
 for repo in $repos; do plug $repo; done
 
