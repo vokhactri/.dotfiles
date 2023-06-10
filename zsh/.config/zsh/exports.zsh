@@ -9,6 +9,7 @@ export MANWIDTH=999
 export EDITOR="micro"
 export PAGE="bat"
 export VISUAL="micro"
+export SUDO_EDITOR="micro"
 
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
 
