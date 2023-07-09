@@ -49,6 +49,8 @@ for repo in $repos; do plug $repo; done
 # Clean startup prompt
 [ ! -f ~/.hushlogin ] && touch ~/.hushlogin
 
+unsetopt PROMPT_SP
+
 # Load and initialise completion system
 autoload -Uz compinit
 compinit
