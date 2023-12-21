@@ -14,3 +14,5 @@ export SUDO_EDITOR="micro"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
 
 export NODE_OPTIONS="--dns-result-order=ipv4first"
+
+export PATH="/home/trivk/.local/share/fnm:$PATH"
