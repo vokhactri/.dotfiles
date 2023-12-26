@@ -9,10 +9,6 @@ fi
 source "$ZAP_SCRIPT"
 
 repos=(
-  # local plugins
-  "$ZDOTDIR/aliases.zsh"
-  "$ZDOTDIR/exports.zsh"
-  "$ZDOTDIR/eval.zsh"
   # remote plugins
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-completions
@@ -23,6 +19,10 @@ repos=(
   zap-zsh/supercharge
   zap-zsh/fzf
   /wintermi/zsh-fnm
+  # local plugins
+  "$ZDOTDIR/aliases.zsh"
+  "$ZDOTDIR/exports.zsh"
+  "$ZDOTDIR/eval.zsh"
 )
 mac_only_repos=(wintermi/zsh-brew)
 
