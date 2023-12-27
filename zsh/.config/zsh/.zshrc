@@ -3,7 +3,7 @@ ZAP_SCRIPT="$ZAP_DIR/zap.zsh"
 ZAP_BRANCH=release-v1
 
 if [ ! -f $ZAP_SCRIPT ]; then
-  git clone -b "$ZAP_BRANCH" https://github.com/zap-zsh/zap.git "$ZAP_DIR" &> /dev/null || { echo "❌ Failed to install Zap" && return 2 }
+  git clone -b "$ZAP_BRANCH" https://github.com/zap-zsh/zap.git "$ZAP_DIR"
 fi
 
 source "$ZAP_SCRIPT"
@@ -16,9 +16,9 @@ repos=(
   hlissner/zsh-autopair
   wintermi/zsh-brew
   wintermi/zsh-lsd
+  wintermi/zsh-fnm
   zap-zsh/supercharge
   zap-zsh/fzf
-  /wintermi/zsh-fnm
   # local plugins
   "$ZDOTDIR/aliases.zsh"
   "$ZDOTDIR/exports.zsh"
