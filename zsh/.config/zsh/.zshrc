@@ -10,15 +10,15 @@ source "$ZAP_SCRIPT"
 
 repos=(
   # remote plugins
+  zap-zsh/supercharge
+  zap-zsh/fzf
+  wintermi/zsh-brew
+  wintermi/zsh-lsd
+  wintermi/zsh-fnm
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-completions
   zdharma-continuum/fast-syntax-highlighting
   hlissner/zsh-autopair
-  wintermi/zsh-brew
-  wintermi/zsh-lsd
-  wintermi/zsh-fnm
-  zap-zsh/supercharge
-  zap-zsh/fzf
   # local plugins
   "$ZDOTDIR/aliases.zsh"
   "$ZDOTDIR/exports.zsh"
