@@ -6,21 +6,15 @@
 
 ## Installation
 
-1. clone repo to your `$HOME` dir
+1. clone this repo to your `$HOME` and switch to cloned dir:
 
 ```
-  git -C $HOME clone https://github.com/vokhactri/.dotfiles.git
+git -C $HOME clone https://github.com/vokhactri/.dotfiles.git && cd "$(basename "$_" .git)"
 ```
 
-2. go to repo directory that you've cloned
+2. use `stow` to symlink configs to `$HOME/.config`:
 
-```
-cd .dotfiles
-```
-
-3. use `stow` to symlink all configs to `$HOME/.config` dir:
-
-- to symlink for config dirs
+- to symlink all config dirs
   ```
   stow */
   ```
