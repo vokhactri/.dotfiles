@@ -8,34 +8,27 @@ fi
 
 source "$ZAP_SCRIPT"
 
-repos=(
-  # remote plugins
+remote_plugins=(
   zap-zsh/supercharge
   zap-zsh/fzf
-  wintermi/zsh-brew
   wintermi/zsh-lsd
   wintermi/zsh-fnm
   zsh-users/zsh-autosuggestions
   zsh-users/zsh-completions
   zdharma-continuum/fast-syntax-highlighting
   hlissner/zsh-autopair
-  # local plugins
-  "$ZDOTDIR/aliases.zsh"
-  "$ZDOTDIR/exports.zsh"
-  "$ZDOTDIR/eval.zsh"
 )
-mac_only_repos=(wintermi/zsh-brew)
+plugins=("${remote_plugins[@]}" "$ZDOTDIR/*")
+mac_plugins=(wintermi/zsh-brew)
 
 case "$(uname -s)" in
-
 Darwin)
 	# echo 'Mac OS X'
+  plugins=("${mac_plugins[@]}" "${plugins[@]}")
 	;;
-
 Linux)
-  for repo in $mac_only_repos; do repos=("${repos[@]/$repo}"); done
+  # echo 'Linux'
 	;;
-
 CYGWIN* | MINGW32* | MSYS* | MINGW*)
 	# echo 'MS Windows'
 	;;
@@ -44,7 +37,7 @@ CYGWIN* | MINGW32* | MSYS* | MINGW*)
 	;;
 esac
 
-for repo in $repos; do plug $repo; done
+for plugin in $plugins; do plug $plugin; done
 
 # Clean startup prompt
 [ ! -f ~/.hushlogin ] && touch ~/.hushlogin
