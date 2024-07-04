@@ -1,49 +1,34 @@
-ZAP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zap"
-ZAP_SCRIPT="$ZAP_DIR/zap.zsh"
-ZAP_BRANCH=release-v1
+# install zinit
+source $ZDOTDIR/zinit.zsh
 
-if [ ! -f $ZAP_SCRIPT ]; then
-  git clone -b "$ZAP_BRANCH" https://github.com/zap-zsh/zap.git "$ZAP_DIR"
-fi
+# load remote plugins
+zinit wait lucid light-mode for \
+    wintermi/zsh-brew \
+    zap-zsh/supercharge \
+    wintermi/zsh-fnm \
+    hlissner/zsh-autopair \
+    atinit"zicompinit; zicdreplay -q" \
+        zdharma-continuum/fast-syntax-highlighting \
+    atload"_zsh_autosuggest_start" \
+        zsh-users/zsh-autosuggestions \
+    blockf atpull'zinit creinstall -q .' \
+        zsh-users/zsh-completions
 
-source "$ZAP_SCRIPT"
+# load local snippets
+zinit snippet $ZDOTDIR/exports.zsh
+zinit snippet $ZDOTDIR/aliases.zsh
 
-remote_plugins=(
-  zap-zsh/supercharge
-  zap-zsh/fzf
-  wintermi/zsh-lsd
-  wintermi/zsh-fnm
-  zsh-users/zsh-autosuggestions
-  zsh-users/zsh-completions
-  zdharma-continuum/fast-syntax-highlighting
-  hlissner/zsh-autopair
-)
-plugins=("${remote_plugins[@]}" "$ZDOTDIR/*")
-mac_plugins=(wintermi/zsh-brew)
+# load prompt theme
+zinit ice as"command" from"gh-r" \
+    atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
+    atpull"%atclone" src"init.zsh"
+zinit light starship/starship
 
-case "$(uname -s)" in
-Darwin)
-	# echo 'Mac OS X'
-  plugins=("${mac_plugins[@]}" "${plugins[@]}")
-	;;
-Linux)
-  # echo 'Linux'
-	;;
-CYGWIN* | MINGW32* | MSYS* | MINGW*)
-	# echo 'MS Windows'
-	;;
-*)
-	# echo 'Other OS'
-	;;
-esac
-
-for plugin in $plugins; do plug $plugin; done
-
-# Clean startup prompt
-[ ! -f ~/.hushlogin ] && touch ~/.hushlogin
-
-unsetopt PROMPT_SP
-
-# Load and initialise completion system
-autoload -Uz compinit
-compinit
+# load binaries
+zinit as"command" wait lucid light-mode from"gh-r" for \
+    pick"bat-*/bat" atclone'cd $(ls -d */|head -n 1); cp autocomplete/bat.zsh _bat' atpull"%atclone" @sharkdp/bat \
+    pick"lsd-*/lsd" lsd-rs/lsd \
+    atclone"./zoxide init zsh > init.zsh" atpull"%atclone" src"init.zsh" \
+        ajeetdsouza/zoxide \
+    atclone"./fzf --zsh > init.zsh" atpull="%atclone" src"init.zsh" \
+        junegunn/fzf
