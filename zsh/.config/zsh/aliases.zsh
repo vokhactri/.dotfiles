@@ -1,3 +1,4 @@
 #!/usr/bin/env zsh
 
-[ -x "$(command -v bat)" ] && alias cat="bat"
+(($+commands[bat])) && alias cat="bat"
+(($+commands[lsd])) && alias ls="lsd"
