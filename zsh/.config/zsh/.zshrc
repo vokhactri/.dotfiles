@@ -5,6 +5,7 @@ source $ZDOTDIR/zinit.zsh
 zinit wait lucid light-mode for \
     wintermi/zsh-brew \
     hlissner/zsh-autopair \
+    Aloxaf/fzf-tab \
     atinit"zicompinit; zicdreplay -q" \
         zdharma-continuum/fast-syntax-highlighting zap-zsh/supercharge \
     atload"_zsh_autosuggest_start" \
@@ -32,3 +33,6 @@ zinit as"command" wait lucid light-mode from"gh-r" for \
     atclone"./fzf --zsh > init.zsh" atpull="%atclone" src"init.zsh" \
         junegunn/fzf \
     atclone"./fnm env --use-on-cd > init.zsh" atpull"%atclone" src"init.zsh" Schniz/fnm
+
+
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always --icon=always $realpath'
