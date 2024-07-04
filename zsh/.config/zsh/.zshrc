@@ -25,9 +25,11 @@ zinit light starship/starship
 
 # load binaries
 zinit as"command" wait lucid light-mode from"gh-r" for \
-    pick"bat-*/bat" atclone'cd $(ls -d */|head -n 1); cp autocomplete/bat.zsh _bat' atpull"%atclone" @sharkdp/bat \
-    pick"lsd-*/lsd" lsd-rs/lsd \
-    pick"micro-*/micro" zyedidia/micro \
+    extract"!" lsd-rs/lsd \
+    extract"!" zyedidia/micro \
+    extract"!" cp"autocomplete/bat.zsh -> _bat" @sharkdp/bat \
+    extract"!" atclone="cp usr/bin/fastfetch .; rm -rf usr" \
+        fastfetch-cli/fastfetch \
     atclone"./zoxide init zsh > init.zsh" atpull"%atclone" src"init.zsh" \
         ajeetdsouza/zoxide \
     atclone"./fzf --zsh > init.zsh" atpull="%atclone" src"init.zsh" \
