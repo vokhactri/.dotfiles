@@ -13,10 +13,6 @@ zinit wait lucid light-mode for \
     blockf atpull'zinit creinstall -q .' \
         zsh-users/zsh-completions
 
-# load local snippets
-zinit snippet $ZDOTDIR/exports.zsh
-zinit snippet $ZDOTDIR/aliases.zsh
-
 # load prompt theme
 zinit ice as"command" from"gh-r" \
     atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
@@ -25,9 +21,9 @@ zinit light starship/starship
 
 # load binaries
 zinit as"command" wait lucid light-mode from"gh-r" for \
-    extract"!" lsd-rs/lsd \
-    extract"!" zyedidia/micro \
-    extract"!" cp"autocomplete/bat.zsh -> _bat" @sharkdp/bat \
+    extract"!" atload="alias cat=bat" lsd-rs/lsd \
+    extract"!" atload="alias nano=micro" zyedidia/micro \
+    extract"!" cp"autocomplete/bat.zsh -> _bat" atload"alias cat=bat" @sharkdp/bat \
     extract"!" atclone="cp usr/bin/fastfetch .; rm -rf usr" \
         fastfetch-cli/fastfetch \
     atclone"./zoxide init zsh > init.zsh" atpull"%atclone" src"init.zsh" \
@@ -36,5 +32,7 @@ zinit as"command" wait lucid light-mode from"gh-r" for \
         junegunn/fzf \
     atclone"./fnm env --use-on-cd > init.zsh" atpull"%atclone" src"init.zsh" Schniz/fnm
 
+# load local snippets
+source $ZDOTDIR/exports.zsh
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always --icon=always $realpath'
