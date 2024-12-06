@@ -24,7 +24,7 @@ zinit as"command" wait lucid light-mode from"gh-r" for \
     extract"!" lsd-rs/lsd \
     extract"!" zyedidia/micro \
     extract"!" cp"autocomplete/bat.zsh -> _bat" @sharkdp/bat \
-    extract"!" atclone="cp usr/bin/fastfetch .; rm -rf usr" \
+    extract"!" atclone="cp usr/bin/fastfetch .; rm -rf usr" atpull"%atclone" \
         fastfetch-cli/fastfetch \
     atclone"./zoxide init zsh > init.zsh" atpull"%atclone" src"init.zsh" \
         ajeetdsouza/zoxide \
@@ -36,3 +36,4 @@ zinit as"command" wait lucid light-mode from"gh-r" for \
 source $ZDOTDIR/exports.zsh
 source $ZDOTDIR/aliases.zsh
 source $ZDOTDIR/options.zsh
+source $ZDOTDIR/bin.zsh
