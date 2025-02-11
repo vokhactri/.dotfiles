@@ -1,6 +1,17 @@
 #!/usr/bin/env zsh
 
-alias cat=bat
-alias ls=lsd
-alias nano=micro
-alias fetch=fastfetch
+# Modern alternatives to traditional commands
+alias cat='bat'
+alias ls='lsd'
+alias ll='lsd -l'
+alias la='lsd -la'
+alias tree='lsd --tree'
+alias nano='micro'
+alias fetch='fastfetch'
+
+# Git shortcuts
+alias g='git'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull' 
