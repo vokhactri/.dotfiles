@@ -2,15 +2,15 @@
 
 # Modern alternatives to traditional commands
 alias cat='bat'
-alias ls='lsd'
-alias ll='lsd -l'
-alias la='lsd -la'
+alias ls='lsd -A'
+alias la='lsd -lA'
 alias tree='lsd --tree'
 alias nano='micro'
 alias fetch='fastfetch'
 
 # Git shortcuts
 alias g='git'
+alias gs='git status -sb'
 alias ga='git add'
 alias gc='git commit'
 alias gp='git push'

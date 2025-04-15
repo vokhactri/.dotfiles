@@ -8,11 +8,8 @@ setopt MENU_COMPLETE
 setopt EXTENDED_GLOB
 setopt INTERACTIVE_COMMENTS
 setopt APPEND_HISTORY
+setopt PUSHD_IGNORE_DUPS
 
-HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
-HISTSIZE=5000000
-SAVEHIST=5000000
-HIST_STAMPS="dd.mm.yyyy"
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ":start:elapsed;command" format.
 setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
@@ -25,5 +22,9 @@ setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
+
+HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
+HISTSIZE=5000000
+SAVEHIST=5000000
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always --icon=always $realpath'

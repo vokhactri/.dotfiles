@@ -36,4 +36,3 @@ zinit is-snippet id-as for \
     $ZDOTDIR/snippets/aliases \
     $ZDOTDIR/snippets/options \
     $ZDOTDIR/snippets/bin
-
