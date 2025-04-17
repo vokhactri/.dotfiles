@@ -6,6 +6,7 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
 # not to use aliases: zi or zini
 declare -A ZINIT
-export ZINIT[NO_ALIASES]=1
+ZINIT[NO_ALIASES]=1
+ZINIT[LIST_COMMAND]='lsd --tree'
 
 source "${ZINIT_HOME}/zinit.zsh"
