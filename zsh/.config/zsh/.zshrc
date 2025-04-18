@@ -1,49 +1,38 @@
-ZAP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zap"
-ZAP_SCRIPT="$ZAP_DIR/zap.zsh"
-ZAP_BRANCH=release-v1
+# install zinit
+source $ZDOTDIR/zinit
 
-if [ ! -f $ZAP_SCRIPT ]; then
-  git clone -b "$ZAP_BRANCH" https://github.com/zap-zsh/zap.git "$ZAP_DIR"
-fi
+# load remote plugins
+zinit wait lucid light-mode id-as depth"1" for \
+    wintermi/zsh-brew \
+    hlissner/zsh-autopair \
+    Aloxaf/fzf-tab \
+    atinit"zicompinit; zicdreplay -q" \
+        zdharma-continuum/fast-syntax-highlighting \
+    atload"_zsh_autosuggest_start" \
+        zsh-users/zsh-autosuggestions
 
-source "$ZAP_SCRIPT"
+# load prompt theme
+zinit ice as"command" from"gh-r" id-as \
+    atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
+    atpull"%atclone" src"init.zsh"
+zinit light starship/starship
 
-remote_plugins=(
-  zap-zsh/supercharge
-  zap-zsh/fzf
-  wintermi/zsh-lsd
-  wintermi/zsh-fnm
-  zsh-users/zsh-autosuggestions
-  zsh-users/zsh-completions
-  zdharma-continuum/fast-syntax-highlighting
-  hlissner/zsh-autopair
-)
-plugins=("${remote_plugins[@]}" "$ZDOTDIR/*")
-mac_plugins=(wintermi/zsh-brew)
+# load binaries
+zinit as"command" wait lucid light-mode from"gh-r" id-as for \
+    extract"!" lsd-rs/lsd \
+    extract"!" zyedidia/micro \
+    extract"!" cp"autocomplete/bat.zsh -> _bat" @sharkdp/bat \
+    extract"!" pick"usr/bin/fastfetch" \
+        fastfetch-cli/fastfetch \
+    atclone"./zoxide init zsh > init.zsh" atpull"%atclone" src"init.zsh" \
+        ajeetdsouza/zoxide \
+    atclone"./fzf --zsh > init.zsh" atpull="%atclone" src"init.zsh" \
+        junegunn/fzf \
+    atclone"./fnm env --use-on-cd --shell zsh > init.zsh; ./fnm completions --shell zsh > _fnm" atpull"%atclone" src"init.zsh" Schniz/fnm
 
-case "$(uname -s)" in
-Darwin)
-	# echo 'Mac OS X'
-  plugins=("${mac_plugins[@]}" "${plugins[@]}")
-	;;
-Linux)
-  # echo 'Linux'
-	;;
-CYGWIN* | MINGW32* | MSYS* | MINGW*)
-	# echo 'MS Windows'
-	;;
-*)
-	# echo 'Other OS'
-	;;
-esac
-
-for plugin in $plugins; do plug $plugin; done
-
-# Clean startup prompt
-[ ! -f ~/.hushlogin ] && touch ~/.hushlogin
-
-unsetopt PROMPT_SP
-
-# Load and initialise completion system
-autoload -Uz compinit
-compinit
+# load local scripts
+zinit is-snippet id-as for \
+    $ZDOTDIR/snippets/exports \
+    $ZDOTDIR/snippets/aliases \
+    $ZDOTDIR/snippets/options \
+    $ZDOTDIR/snippets/bin

@@ -1,0 +1,37 @@
+#!/usr/bin/env zsh
+
+# Add GNU tools to PATH without 'g' prefix
+local gnu_tools=(
+    "coreutils"
+    "findutils"
+    "gnu-tar"
+    "gnu-sed"
+    "gawk"
+    "gnu-indent"
+    "grep"
+)
+
+for tool in $gnu_tools; do
+    local gnubin="/opt/homebrew/opt/$tool/libexec/gnubin"
+    if [ -d "$gnubin" ]; then
+        case ":$PATH:" in
+            *":$gnubin:"*) ;;
+            *) export PATH="$gnubin:$PATH" ;;
+        esac
+    fi
+done
+
+# Add other bins separately since they have a different path structure
+local bin_paths=(
+    "$HOME/.local/bin"
+    "/opt/homebrew/opt/gnu-getopt/bin"
+)
+for bin_path in $bin_paths; do
+    if [ -d "$bin_path" ]; then
+        case ":$PATH:" in
+            *":$bin_path:"*) ;;
+            *) export PATH="$bin_path:$PATH" ;;
+        esac
+    fi
+done
+
