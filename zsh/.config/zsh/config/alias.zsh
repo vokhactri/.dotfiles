@@ -16,5 +16,10 @@ alias gc='git commit'
 alias gp='git push'
 alias gl='git pull'
 
-# Docker shortcuts
-alias docker='podman'
+docker() {
+    if command -v podman >/dev/null 2>&1; then
+        podman "$@"
+    else
+        command docker "$@"
+    fi
+}
