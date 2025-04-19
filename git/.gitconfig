@@ -2,11 +2,6 @@
 	defaultBranch = main
 [user]
 	name = Tri Vo Khac
-	email = 33442340+vokhactri@users.noreply.github.com
-[filter "lfs"]
-	required = true
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
+	email = me@trivk.dev
 [push]
 	autoSetupRemote = true

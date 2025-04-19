@@ -6,6 +6,5 @@ export EDITOR="micro"
 export PAGER="bat"
 export VISUAL="micro"
 export SUDO_EDITOR="micro"
-export COMPANY_DIR="$HOME/Documents/work/company/"
 
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml

@@ -1,3 +1,3 @@
-export XDG_CONFIG_HOME="${HOME}/.config"
-export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
-export SHELL_SESSIONS_DISABLE=1
+XDG_CONFIG_HOME="${HOME}/.config"
+XDG_BIN_HOME="${HOME}/.local/bin"
+ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
