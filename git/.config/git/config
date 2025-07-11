@@ -1,7 +1,22 @@
 [init]
 	defaultBranch = main
+
 [user]
 	name = Tri Vo Khac
 	email = me@trivk.dev
+
+[core]
+	compression = 9
+	whitespace = error
+	preloadindex = true
+
+[advice]
+	addEmptyPathspec = false
+	pushNonFastForward = false
+	statusHints = false
+
 [push]
 	autoSetupRemote = true
+
+[url "git@github.com:"]
+	insteadOf = "gh:"
