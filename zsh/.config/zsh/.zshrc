@@ -15,7 +15,7 @@ zinit wait lucid light-mode id-as depth'1' for \
 
 zinit id-as from'gh-r' lbin'!' null for \
     lsd-rs/lsd \
-    zyedidia/micro \
+    micro-editor/micro \
     @sharkdp/bat
 
 zinit for \

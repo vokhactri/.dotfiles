@@ -8,6 +8,9 @@ alias tree='lsd --tree'
 alias nano='micro'
 alias fetch='fastfetch'
 
+# Global alias
+alias \-g -- --help="--help | bat -plhelp"
+
 # Git shortcuts
 alias g='git'
 alias gs='git status -sb'

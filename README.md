@@ -1,8 +1,9 @@
-# My personal dotfiles
+# My personal opinionated dotfiles for `zsh`
 
 ## Requirement
 
 - **GNU** `stow`
+- `zsh` (I mean, duh)
 
 ## Installation
 
@@ -22,6 +23,12 @@ git -C $HOME clone https://github.com/vokhactri/.dotfiles.git && cd "$(basename 
   ```
   stow zsh
   ```
+
+3. reload your `zsh` to apply changes:
+
+```
+exec zsh
+```
 
 ## Credit
 
