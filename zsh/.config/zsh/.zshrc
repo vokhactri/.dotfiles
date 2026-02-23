@@ -55,9 +55,9 @@ zinit for \
 
 zinit for \
     id-as \
-    from'gh-r'  \
-    lbin'!fzf'  \
-    atclone'fzf --zsh > fzf.zsh' \
+    from'gh-r' \
+    lbin'!fzf' \
+    atclone'./fzf --zsh > fzf.zsh' \
     atpull'%atclone' \
     src'fzf.zsh' \
     @junegunn/fzf
