@@ -13,53 +13,58 @@ zinit wait lucid light-mode id-as depth'1' for \
     atload'_zsh_autosuggest_start' \
         zsh-users/zsh-autosuggestions
 
-zinit id-as from'gh-r' lbin'!' null for \
+zinit id-as from'gh-r' lbin'!' completions for \
     lsd-rs/lsd \
     micro-editor/micro \
-    @sharkdp/bat
+    mv'**/bat.zsh -> _bat' \
+        @sharkdp/bat
 
 zinit for \
     id-as \
     from'gh-r' \
-    sbin'!**/bin/fastfetch -> fastfetch' \
+    mv'**/bin/fastfetch -> fastfetch' \
+    atclone'for dir in fastfetch*/; do rm -rf "$dir"; done' \
+    atpull'%atclone' \
+    sbin'fastfetch' \
     @fastfetch-cli/fastfetch
 
 zinit for \
     id-as \
-    atload'eval "$(zoxide init zsh)"' \
     from'gh-r' \
+    atclone'./zoxide init zsh > init.zsh' \
+    atpull'%atclone' \
     lbin'!' \
     @ajeetdsouza/zoxide
 
 zinit for \
     id-as \
-    as'completion' \
-    atclone'./fnm completions --shell zsh > _fnm.zsh' \
-    atload'eval "$(fnm env --use-on-cd --shell zsh)"' \
+    from'gh-r' \
+    atclone'
+        ./fnm env --use-on-cd --shell zsh > init.zsh; \
+        ./fnm completions --shell zsh > _fnm;
+    ' \
     atpull'%atclone' \
     blockf \
-    from'gh-r' \
-    nocompile \
     sbin'fnm' \
     @Schniz/fnm
 
 zinit for \
     id-as \
-    as'completion' \
-    atclone'./starship completions zsh > _starship' \
-    atpull'%atclone' \
-    atload'eval "$(starship init zsh)"' \
     from'gh-r' \
-    sbin'**/starship -> starship' \
+    atclone'
+        ./starship init zsh > init.zsh; \   
+        ./starship completions zsh > _starship;
+    ' \
+    atpull'%atclone' \
+    sbin'starship' \
     @starship/starship
 
 zinit for \
     id-as \
     from'gh-r' \
-    lbin'!fzf' \
-    atclone'./fzf --zsh > fzf.zsh' \
+    atclone'./fzf --zsh > init.zsh' \
     atpull'%atclone' \
-    src'fzf.zsh' \
+    lbin'!fzf' \
     @junegunn/fzf
 
 for script in $ZDOTDIR/config/*.zsh; do
