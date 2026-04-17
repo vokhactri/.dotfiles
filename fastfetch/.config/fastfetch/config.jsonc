@@ -1,42 +1,120 @@
 {
     "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
     "logo": {
-        "type": "builtin",
-        "source": "arch"
+        "type": "small",
+        "padding": {
+            "top": 1
+        }
+    },
+    "display": {
+        "separator": " "
     },
     "modules": [
-        "title",
-        "separator",
+        {
+            "type": "custom",
+            "key": "╭───────────╮"
+        },
+        {
+            "type": "title",
+            "key": "│ {#36}󰀄{#keys} user    │",
+            "format": "{user-name}"
+        },
+        {
+            "type": "title",
+            "key": "│ {#36}󰇅{#keys} host    │",
+            "format": "{host-name}"
+        },
+        {
+            "type": "custom",
+            "key": "├───────────┤"
+        },
         {
             "type": "os",
-            "format": "Arch Linux ({12})"
+            "key": "│ {#35}󰍹{#keys} os      │"
         },
-        "host",
-        "kernel",
-        "uptime",
+        {
+            "type": "kernel",
+            "key": "│ {#35}󰒓{#keys} kernel  │"
+        },
+        {
+            "type": "uptime",
+            "key": "│ {#35}󰅐{#keys} uptime  │"
+        },
         {
             "type": "packages",
-            "format": "{} (pacman)"
+            "key": "│ {#35}󰏖{#keys} pkgs    │"
         },
-        "shell",
-        "display",
-        "de",
-        "wm",
-        "wmtheme",
-        "theme",
-        "icons",
-        "font",
-        "cursor",
-        "terminal",
-        "terminalfont",
-        "cpu",
-        "gpu",
-        "memory",
-        "disk",
-        "battery",
-        "poweradapter",
-        "locale",
-        "break",
-        "colors"
+        {
+            "type": "shell",
+            "key": "│ {#35}󰆍{#keys} shell   │"
+        },
+        {
+            "type": "custom",
+            "key": "├───────────┤"
+        },
+        {
+            "type": "wm",
+            "key": "│ {#34}󰇄{#keys} wm      │"
+        },
+        {
+            "type": "terminal",
+            "key": "│ {#34}󰆍{#keys} term    │"
+        },
+        {
+            "type": "terminalfont",
+            "key": "│ {#34}󰛖{#keys} font    │"
+        },
+        {
+            "type": "custom",
+            "key": "├───────────┤"
+        },
+        {
+            "type": "host",
+            "key": "│ {#33}󰌢{#keys} model   │"
+        },
+        {
+            "type": "cpu",
+            "key": "│ {#33}󰻠{#keys} cpu     │",
+            "showPeCoreCount": true
+        },
+        {
+            "type": "gpu",
+            "key": "│ {#33}󰢮{#keys} gpu     │"
+        },
+        {
+            "type": "memory",
+            "key": "│ {#33}󰑭{#keys} memory  │"
+        },
+        {
+            "type": "disk",
+            "key": "│ {#33}󰋊{#keys} disk    │",
+            "folders": "/"
+        },
+        {
+            "type": "battery",
+            "key": "│ {#33}󰁹{#keys} battery │"
+        },
+        {
+            "type": "custom",
+            "key": "├───────────┤"
+        },
+        {
+            "type": "localip",
+            "key": "│ {#32}󰩟{#keys} ip      │",
+            "format": "{ipv4} ({ifname})"
+        },
+        {
+            "type": "custom",
+            "key": "├───────────┤"
+        },
+        {
+            "type": "colors",
+            "key": "│ {#31}󰏘{#keys} colors  │",
+            "symbol": "circle"
+        },
+        {
+            "type": "custom",
+            "key": "╰───────────╯"
+        }
     ]
 }
