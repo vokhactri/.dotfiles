@@ -52,7 +52,7 @@ zinit for \
     id-as \
     from'gh-r' \
     atclone'
-        ./starship init zsh > init.zsh; \   
+        ./starship init zsh > init.zsh; \
         ./starship completions zsh > _starship;
     ' \
     atpull'%atclone' \
