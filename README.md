@@ -38,3 +38,4 @@ exec zsh
 
 - [Machfiles](https://github.com/ChristianChiarulli/Machfiles/)
 - [zsh_unplugged](https://github.com/mattmc3/zsh_unplugged)
+- [ayanrajpoot10/dotfiles](https://github.com/ayanrajpoot10/dotfiles)

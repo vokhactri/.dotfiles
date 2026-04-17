@@ -1,120 +1,80 @@
 {
-    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
-    "logo": {
-        "type": "small",
-        "padding": {
-            "top": 1
-        }
-    },
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
     "display": {
-        "separator": " "
+        "key": {
+            "width": 10
+        },
+        "size": {
+            "binaryPrefix": "jedec"
+        },
+        "separator": ""
+    },
+    "logo": {
+        "type": "kitty-direct",
+        "source": "~/.config/fastfetch/albedo.png",
+        "width": 20,
+        "height": 10
     },
     "modules": [
-        {
-            "type": "custom",
-            "key": "╭───────────╮"
-        },
-        {
-            "type": "title",
-            "key": "│ {#36}󰀄{#keys} user    │",
-            "format": "{user-name}"
-        },
-        {
-            "type": "title",
-            "key": "│ {#36}󰇅{#keys} host    │",
-            "format": "{host-name}"
-        },
-        {
-            "type": "custom",
-            "key": "├───────────┤"
-        },
+        "break",
         {
             "type": "os",
-            "key": "│ {#35}󰍹{#keys} os      │"
+            "key": "os",
+            "keyColor": "yellow",
+            "format": "{name}"
         },
         {
             "type": "kernel",
-            "key": "│ {#35}󰒓{#keys} kernel  │"
-        },
-        {
-            "type": "uptime",
-            "key": "│ {#35}󰅐{#keys} uptime  │"
+            "key": "ker",
+            "keyColor": "green"
         },
         {
             "type": "packages",
-            "key": "│ {#35}󰏖{#keys} pkgs    │"
+            "key": "pkgs",
+            "keyColor": "cyan"
         },
         {
             "type": "shell",
-            "key": "│ {#35}󰆍{#keys} shell   │"
-        },
-        {
-            "type": "custom",
-            "key": "├───────────┤"
+            "key": "sh",
+            "keyColor": "blue",
+            "format": "{pretty-name}"
         },
         {
             "type": "wm",
-            "key": "│ {#34}󰇄{#keys} wm      │"
+            "key": "wm",
+            "keyColor": "red",
+            "format": "{pretty-name}"
         },
         {
-            "type": "terminal",
-            "key": "│ {#34}󰆍{#keys} term    │"
-        },
-        {
-            "type": "terminalfont",
-            "key": "│ {#34}󰛖{#keys} font    │"
-        },
-        {
-            "type": "custom",
-            "key": "├───────────┤"
-        },
-        {
-            "type": "host",
-            "key": "│ {#33}󰌢{#keys} model   │"
+            "type": "uptime",
+            "key": "up",
+            "keyColor": "green"
         },
         {
             "type": "cpu",
-            "key": "│ {#33}󰻠{#keys} cpu     │",
-            "showPeCoreCount": true
-        },
-        {
-            "type": "gpu",
-            "key": "│ {#33}󰢮{#keys} gpu     │"
+            "key": "cpu",
+            "keyColor": "red",
+            "format": "{name}"
         },
         {
             "type": "memory",
-            "key": "│ {#33}󰑭{#keys} memory  │"
+            "key": "ram",
+            "keyColor": "yellow",
+            "format": "{used} / {total}"
         },
         {
             "type": "disk",
-            "key": "│ {#33}󰋊{#keys} disk    │",
-            "folders": "/"
+            "key": "disk",
+            "keyColor": "cyan",
+            "folders": [
+                "/"
+            ],
+            "format": "{size-used} / {size-total}"
         },
-        {
-            "type": "battery",
-            "key": "│ {#33}󰁹{#keys} battery │"
-        },
-        {
-            "type": "custom",
-            "key": "├───────────┤"
-        },
-        {
-            "type": "localip",
-            "key": "│ {#32}󰩟{#keys} ip      │",
-            "format": "{ipv4} ({ifname})"
-        },
+        "break",
         {
             "type": "custom",
-            "key": "├───────────┤"
-        },
-        {
-            "type": "colors",
-            "key": "│ {#31}󰏘{#keys} colors  │",
-            "symbol": "circle"
-        },
-        {
-            "type": "custom",
-            "key": "╰───────────╯"
+            "format": "\u001b[33m󰮯 \u001b[32m󰊠 \u001b[34m󰊠 \u001b[31m󰊠 \u001b[36m󰊠 \u001b[35m󰊠 \u001b[37m󰊠 \u001b[97m󰊠"
         }
     ]
 }
