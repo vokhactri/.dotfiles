@@ -13,24 +13,24 @@
 
 1. clone this repo to your `$HOME` and switch to cloned dir:
 
-```
-git -C $HOME clone https://github.com/vokhactri/.dotfiles.git && cd "$(basename "$_" .git)"
+```sh
+git -C $HOME clone https://github.com/vokhactri/.dotfiles.git && cd $HOME/.dotfiles
 ```
 
 2. use `stow` to symlink configs to `$HOME/.config`:
 
 - to symlink all config dirs
-  ```
+  ```sh
   stow */
   ```
 - to symlink only one config dir, for example `zsh`
-  ```
+  ```sh
   stow zsh
   ```
 
 3. reload your `zsh` to apply changes:
 
-```
+```sh
 exec zsh
 ```
 
