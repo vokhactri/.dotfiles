@@ -9,8 +9,6 @@ export SUDO_EDITOR="micro"
 
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
 
-export HOMEBREW_UPGRADE_GREEDY=1
-
 export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
