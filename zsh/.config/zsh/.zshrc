@@ -36,9 +36,18 @@ zinit for \
     lbin'!' \
     @ajeetdsouza/zoxide
 
+# pick the correct fnm release asset for this OS/arch
+if [[ "$OSTYPE" == darwin* ]]; then
+    _fnm_asset='fnm-macos.zip'
+elif [[ "$(uname -m)" == (aarch64|arm64) ]]; then
+    _fnm_asset='fnm-arm64.zip'
+else
+    _fnm_asset='fnm-linux.zip'
+fi
 zinit for \
     id-as \
     from'gh-r' \
+    bpick"$_fnm_asset" \
     atclone'
         ./fnm env --use-on-cd --shell zsh > init.zsh; \
         ./fnm completions --shell zsh > _fnm;
