@@ -52,7 +52,11 @@
           "name": "glm-5.1"
         },
         "glm-5.2": {
-          "name": "glm-5.2"
+          "name": "glm-5.2",
+          "limit": {
+            "context": 400000,
+            "output": 128000
+          }
         },
         "mercury-coder": {
           "name": "mercury-coder"
@@ -103,7 +107,11 @@
           "name": "gemini-flash-lite-latest"
         },
         "gpt-5.5": {
-          "name": "gpt-5.5"
+          "name": "gpt-5.5",
+          "limit": {
+            "context": 400000,
+            "output": 128000
+          }
         },
         "gpt-image-2": {
           "name": "gpt-image-2"
