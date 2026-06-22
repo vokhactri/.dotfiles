@@ -51,6 +51,9 @@
         "glm-5.1": {
           "name": "glm-5.1"
         },
+        "glm-5.2": {
+          "name": "glm-5.2"
+        },
         "mercury-coder": {
           "name": "mercury-coder"
         },
