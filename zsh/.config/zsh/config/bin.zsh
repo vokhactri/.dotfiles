@@ -16,8 +16,8 @@ if [[ ! -f "$MARKER_FILE" ]]; then
 
     for tool in $gnu_tools; do
         gnubin="/opt/homebrew/opt/$tool/libexec/gnubin"
-        if [ -d "$gnubin" ]; then
-            for bin in "$gnubin"/*; do
+        if [[ -d "$gnubin" ]]; then
+            for bin in "$gnubin"/*(N); do
                 ln -sf "$bin" "$XDG_BIN_HOME/$(basename "$bin")"
             done
         fi
@@ -33,10 +33,10 @@ local bin_paths=(
     "/opt/homebrew/opt/gnu-getopt/bin"
 )
 for bin_path in "${bin_paths[@]}"; do
-    if [ -d "$bin_path" ]; then
+    if [[ -d "$bin_path" ]]; then
         case ":$PATH:" in
             *":$bin_path:"*) ;;
-            *) PATH="$bin_path:$PATH" ;;
+            *) path=("$bin_path" $path) ;;
         esac
     fi
 done

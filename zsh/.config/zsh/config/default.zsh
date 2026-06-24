@@ -12,5 +12,5 @@ export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
 export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME/bin:"*) ;;
-  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+  *) path=("$PNPM_HOME/bin" $path) ;;
 esac
