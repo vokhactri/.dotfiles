@@ -16,6 +16,7 @@ zinit wait lucid light-mode id-as depth'1' for \
 zinit id-as from'gh-r' lbin'!' completions for \
     lsd-rs/lsd \
     micro-editor/micro \
+    afadesigns/zshellcheck \
     mv'**/bat.zsh -> _bat' \
         @sharkdp/bat
 
