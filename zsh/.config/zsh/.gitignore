@@ -2,3 +2,4 @@
 .zsh_history
 .zcompcache/
 .zsh_sessions/
+config/secrets.zsh

@@ -8,9 +8,13 @@ export VISUAL="micro"
 export SUDO_EDITOR="micro"
 
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
+export OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS=true
 
 export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME/bin:"*) ;;
-  *) path=("$PNPM_HOME/bin" $path) ;;
-esac
+
+typeset -U path
+path=(
+  "$HOME/.opencode/bin"
+  "$PNPM_HOME/bin"
+  $path
+)

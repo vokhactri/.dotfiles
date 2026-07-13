@@ -1,9 +1,11 @@
 #!/usr/bin/env zsh
 
-# Define a marker file (choose a location in your cache or temp directory)
-MARKER_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/gnu_tools_symlinked"
+local brew_prefix="${HOMEBREW_PREFIX:-}"
+if [[ -z "$brew_prefix" ]] && command -v brew >/dev/null 2>&1; then
+    brew_prefix="$(brew --prefix 2>/dev/null)"
+fi
 
-if [[ ! -f "$MARKER_FILE" ]]; then
+if [[ -n "$brew_prefix" ]]; then
     gnu_tools=(
         "coreutils"
         "findutils"
@@ -14,23 +16,22 @@ if [[ ! -f "$MARKER_FILE" ]]; then
         "grep"
     )
 
-    for tool in $gnu_tools; do
-        gnubin="/opt/homebrew/opt/$tool/libexec/gnubin"
-        if [[ -d "$gnubin" ]]; then
-            for bin in "$gnubin"/*(N); do
-                ln -sf "$bin" "$XDG_BIN_HOME/$(basename "$bin")"
-            done
-        fi
-    done
-
-    # Create the marker file to indicate the script has run
-    touch "$MARKER_FILE"
+    if mkdir -p "$XDG_BIN_HOME"; then
+        for tool in $gnu_tools; do
+            gnubin="$brew_prefix/opt/$tool/libexec/gnubin"
+            if [[ -d "$gnubin" ]]; then
+                for bin in "$gnubin"/*(N); do
+                    target="$XDG_BIN_HOME/${bin:t}"
+                    [[ "$target" -ef "$bin" ]] || ln -sf "$bin" "$target"
+                done
+            fi
+        done
+    fi
 fi
-
 
 local bin_paths=(
     "$XDG_BIN_HOME"
-    "/opt/homebrew/opt/gnu-getopt/bin"
+    "${brew_prefix:+$brew_prefix/opt/gnu-getopt/bin}"
 )
 for bin_path in "${bin_paths[@]}"; do
     if [[ -d "$bin_path" ]]; then

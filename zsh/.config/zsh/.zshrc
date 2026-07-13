@@ -1,5 +1,8 @@
 # install zinit
-source $ZDOTDIR/zinit.zsh
+if ! source "$ZDOTDIR/zinit.zsh"; then
+    print -u2 "zinit: failed to initialize; skipping plugin configuration"
+    return 1
+fi
 
 zinit light zdharma-continuum/zinit-annex-bin-gem-node
 zinit light zdharma-continuum/zinit-annex-binary-symlink
