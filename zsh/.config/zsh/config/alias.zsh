@@ -7,17 +7,14 @@ alias la='lsd -lA'
 alias tree='lsd --tree'
 alias nano='micro'
 alias fetch='fastfetch'
+alias claudex='CLAUDE_CODE_SUBAGENT_MODEL=gpt-5.6-sol \
+CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
+CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
+ENABLE_TOOL_SEARCH=false \
+claude --model gpt-5.6-sol'
 
 # Global alias
 alias \-g -- --help="--help | bat -plhelp"
-
-# Git shortcuts
-alias g='git'
-alias gs='git status -sb'
-alias ga='git add'
-alias gc='git commit'
-alias gp='git push'
-alias gl='git pull'
 
 docker() {
     if command -v podman >/dev/null 2>&1; then
