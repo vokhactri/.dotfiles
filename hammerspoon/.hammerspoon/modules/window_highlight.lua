@@ -200,7 +200,21 @@ function WindowHighlight:watchFocusedWindowLive()
   if not win then return end
 
   self.liveWindowWatcher = win:newWatcher(function(_, event)
-    if event == hs.uielement.watcher.windowMoved
+    if event == hs.uielement.watcher.elementDestroyed then
+      if self.liveWindowWatcher then
+        self.liveWindowWatcher:stop()
+        self.liveWindowWatcher = nil
+      end
+
+      self.watchedWindowId = nil
+      self.currentFrame = nil
+      self:hide()
+
+      hs.timer.doAfter(0.05, function()
+        self:watchFocusedWindowLive()
+        self:update(true)
+      end)
+    elseif event == hs.uielement.watcher.windowMoved
       or event == hs.uielement.watcher.windowResized then
       self:update(true)
     end
@@ -275,6 +289,8 @@ function WindowHighlight:start()
       if windowId ~= self.lastPolledWindowId then
         self.lastPolledWindowId = windowId
         self.lastPolledFrame = win and win:frame() or nil
+        self:watchFocusedWindowLive()
+        self:update(true)
         return
       end
 
