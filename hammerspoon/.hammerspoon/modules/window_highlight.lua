@@ -20,11 +20,22 @@ end
 
 function WindowHighlight.new(config, callbacks)
   local border = hs.drawing.rectangle(hs.geometry.rect(0, 0, 1, 1))
+  border.canvas[1] = {
+    type = "segments",
+    action = "stroke",
+    closed = true,
+    clipToPath = true,
+    coordinates = {
+      { x = 0, y = 0 },
+      { x = 1, y = 0 },
+      { x = 1, y = 1 },
+      { x = 0, y = 1 },
+    },
+  }
   border:setFill(false)
   border:setStroke(true)
   border:setStrokeWidth(config.borderWidth)
   border:setStrokeColor(config.color)
-  border:setRoundedRectRadii(config.radius, config.radius)
   border:setLevel(hs.drawing.windowLevels.screenSaver)
   border:setBehaviorByLabels({
     "canJoinAllSpaces",
@@ -37,6 +48,7 @@ function WindowHighlight.new(config, callbacks)
     config = config,
     callbacks = callbacks or {},
     border = border,
+    cornerRadii = nil,
     currentFrame = nil,
     animationTimer = nil,
     missionControlActive = false,
@@ -114,7 +126,110 @@ end
 
 function WindowHighlight:setFrame(frame)
   self.border:setFrame(frame)
+  self:updateBorderPath(frame)
   self.border:show()
+end
+
+function WindowHighlight:updateCornerRadii(win, borderFrame)
+  local frame = win:frame()
+  local radius = self.config.radius
+  local leftPadding = math.max(frame.x - borderFrame.x, 0)
+  local topPadding = math.max(frame.y - borderFrame.y, 0)
+  local rightPadding = math.max(
+    borderFrame.x + borderFrame.w - (frame.x + frame.w),
+    0
+  )
+  local bottomPadding = math.max(
+    borderFrame.y + borderFrame.h - (frame.y + frame.h),
+    0
+  )
+  local topLeftRadius = radius + math.min(leftPadding, topPadding)
+  local topRightRadius = radius + math.min(rightPadding, topPadding)
+  local bottomRightRadius = radius
+    + math.min(rightPadding, bottomPadding)
+  local bottomLeftRadius = radius
+    + math.min(leftPadding, bottomPadding)
+
+  self.cornerRadii = {
+    topLeft = { x = topLeftRadius, y = topLeftRadius },
+    topRight = { x = topRightRadius, y = topRightRadius },
+    bottomRight = {
+      x = bottomRightRadius,
+      y = bottomRightRadius,
+    },
+    bottomLeft = {
+      x = bottomLeftRadius,
+      y = bottomLeftRadius,
+    },
+  }
+end
+
+function WindowHighlight:updateBorderPath(frame)
+  local radii = self.cornerRadii
+  if not radii then return end
+
+  local width = frame.w
+  local height = frame.h
+  local maxXRadius = width / 2
+  local maxYRadius = height / 2
+  local bezier = 0.5522847498
+
+  local topLeft = {
+    x = math.min(radii.topLeft.x, maxXRadius),
+    y = math.min(radii.topLeft.y, maxYRadius),
+  }
+  local topRight = {
+    x = math.min(radii.topRight.x, maxXRadius),
+    y = math.min(radii.topRight.y, maxYRadius),
+  }
+  local bottomRight = {
+    x = math.min(radii.bottomRight.x, maxXRadius),
+    y = math.min(radii.bottomRight.y, maxYRadius),
+  }
+  local bottomLeft = {
+    x = math.min(radii.bottomLeft.x, maxXRadius),
+    y = math.min(radii.bottomLeft.y, maxYRadius),
+  }
+
+  self.border.canvas[1].coordinates = {
+    { x = topLeft.x, y = 0 },
+    { x = width - topRight.x, y = 0 },
+    {
+      x = width,
+      y = topRight.y,
+      c1x = width - topRight.x + bezier * topRight.x,
+      c1y = 0,
+      c2x = width,
+      c2y = topRight.y - bezier * topRight.y,
+    },
+    { x = width, y = height - bottomRight.y },
+    {
+      x = width - bottomRight.x,
+      y = height,
+      c1x = width,
+      c1y = height - bottomRight.y + bezier * bottomRight.y,
+      c2x = width - bottomRight.x + bezier * bottomRight.x,
+      c2y = height,
+    },
+    { x = bottomLeft.x, y = height },
+    {
+      x = 0,
+      y = height - bottomLeft.y,
+      c1x = bottomLeft.x - bezier * bottomLeft.x,
+      c1y = height,
+      c2x = 0,
+      c2y = height - bottomLeft.y + bezier * bottomLeft.y,
+    },
+    { x = 0, y = topLeft.y },
+    {
+      x = topLeft.x,
+      y = 0,
+      c1x = 0,
+      c1y = topLeft.y - bezier * topLeft.y,
+      c2x = topLeft.x - bezier * topLeft.x,
+      c2y = 0,
+    },
+  }
 end
 
 function WindowHighlight:animateTo(targetFrame)
@@ -171,6 +286,7 @@ function WindowHighlight:update(immediate)
   end
 
   local targetFrame = self:rectForWindow(win)
+  self:updateCornerRadii(win, targetFrame)
   if not immediate then
     self:animateTo(targetFrame)
     return
