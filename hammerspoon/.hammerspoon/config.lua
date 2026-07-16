@@ -13,7 +13,7 @@ return {
     color = accentColor,
 
     hideOnFullscreen = false,
-    framePollingFps = 30,
+    framePollingFps = 60,
   },
 
   appNameToast = {
