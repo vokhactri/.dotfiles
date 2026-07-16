@@ -5,8 +5,8 @@ function AppNameToast.new(config)
   return setmetatable({
     config = config,
     alertId = nil,
-    commandKeyDown = false,
-    commandKeyWatcher = nil,
+    optionKeyDown = false,
+    optionKeyWatcher = nil,
     shouldShow = nil,
   }, AppNameToast)
 end
@@ -36,21 +36,21 @@ function AppNameToast:show()
 end
 
 function AppNameToast:start()
-  if not self.config.showOnCommand then return self end
+  if not self.config.showOnOption then return self end
 
-  self.commandKeyWatcher = hs.eventtap.new({
+  self.optionKeyWatcher = hs.eventtap.new({
     hs.eventtap.event.types.flagsChanged,
   }, function(event)
-    local isCommandDown = event:getFlags().cmd == true
+    local isOptionDown = event:getFlags().alt == true
 
-    if isCommandDown and not self.commandKeyDown then
+    if isOptionDown and not self.optionKeyDown then
       self:show()
     end
 
-    self.commandKeyDown = isCommandDown
+    self.optionKeyDown = isOptionDown
     return false
   end)
-  self.commandKeyWatcher:start()
+  self.optionKeyWatcher:start()
 
   return self
 end

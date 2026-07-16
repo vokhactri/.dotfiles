@@ -24,7 +24,7 @@ return {
     enabled = true,
     duration = 0.7,
     showOnFocus = true,
-    showOnCommand = true,
+    showOnOption = true,
 
     style = {
       fillColor = { white = 0.08, alpha = 0.88 },
