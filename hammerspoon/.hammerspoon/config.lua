@@ -12,10 +12,6 @@ return {
     radius = 10,
     color = accentColor,
 
-    animation = true,
-    animationDuration = 0.10,
-    animationSteps = 8,
-
     hideOnFullscreen = false,
     framePollingFps = 30,
   },

@@ -10,14 +10,6 @@ local function sameFrame(a, b)
     and math.abs(a.h - b.h) < 0.1
 end
 
-local function lerp(a, b, t)
-  return a + (b - a) * t
-end
-
-local function easeOutCubic(t)
-  return 1 - math.pow(1 - t, 3)
-end
-
 function WindowHighlight.new(config, callbacks)
   local border = hs.drawing.rectangle(hs.geometry.rect(0, 0, 1, 1))
   border.canvas[1] = {
@@ -48,9 +40,7 @@ function WindowHighlight.new(config, callbacks)
     config = config,
     callbacks = callbacks or {},
     border = border,
-    cornerRadii = nil,
-    currentFrame = nil,
-    animationTimer = nil,
+    borderRadius = config.radius + config.padding,
     missionControlActive = false,
     dockElement = nil,
     liveWindowWatcher = nil,
@@ -71,24 +61,23 @@ function WindowHighlight:rectForWindow(win)
   local screenFrame = screen:fullFrame()
   local visibleFrame = screen:frame()
   local pad = self.config.padding
+  local left = frame.x - pad
+  local top = frame.y - pad
+  local right = frame.x + frame.w + pad
+  local bottom = frame.y + frame.h + pad
+  local touchesScreen = left <= screenFrame.x
+    or top <= visibleFrame.y
+    or right >= screenFrame.x + screenFrame.w
+    or bottom >= screenFrame.y + screenFrame.h
 
-  local left = math.max(frame.x - pad, screenFrame.x)
-  local top = math.max(frame.y - pad, visibleFrame.y)
-  local right = math.min(
-    frame.x + frame.w + pad,
-    screenFrame.x + screenFrame.w
-  )
-  local bottom = math.min(
-    frame.y + frame.h + pad,
-    screenFrame.y + screenFrame.h
-  )
+  if touchesScreen then return frame, self.config.radius end
 
   return {
     x = left,
     y = top,
     w = right - left,
     h = bottom - top,
-  }
+  }, self.config.radius + pad
 end
 
 function WindowHighlight:isValidWindow(win)
@@ -100,11 +89,6 @@ function WindowHighlight:isValidWindow(win)
 end
 
 function WindowHighlight:hide()
-  if self.animationTimer then
-    self.animationTimer:stop()
-    self.animationTimer = nil
-  end
-
   self.border:hide()
 end
 
@@ -130,174 +114,67 @@ function WindowHighlight:setFrame(frame)
   self.border:show()
 end
 
-function WindowHighlight:updateCornerRadii(win, borderFrame)
-  local frame = win:frame()
-  local radius = self.config.radius
-  local leftPadding = math.max(frame.x - borderFrame.x, 0)
-  local topPadding = math.max(frame.y - borderFrame.y, 0)
-  local rightPadding = math.max(
-    borderFrame.x + borderFrame.w - (frame.x + frame.w),
-    0
-  )
-  local bottomPadding = math.max(
-    borderFrame.y + borderFrame.h - (frame.y + frame.h),
-    0
-  )
-  local topLeftRadius = radius + math.min(leftPadding, topPadding)
-  local topRightRadius = radius + math.min(rightPadding, topPadding)
-  local bottomRightRadius = radius
-    + math.min(rightPadding, bottomPadding)
-  local bottomLeftRadius = radius
-    + math.min(leftPadding, bottomPadding)
-
-  self.cornerRadii = {
-    topLeft = { x = topLeftRadius, y = topLeftRadius },
-    topRight = { x = topRightRadius, y = topRightRadius },
-    bottomRight = {
-      x = bottomRightRadius,
-      y = bottomRightRadius,
-    },
-    bottomLeft = {
-      x = bottomLeftRadius,
-      y = bottomLeftRadius,
-    },
-  }
-end
-
 function WindowHighlight:updateBorderPath(frame)
-  local radii = self.cornerRadii
-  if not radii then return end
-
   local width = frame.w
   local height = frame.h
-  local maxXRadius = width / 2
-  local maxYRadius = height / 2
+  local radius = math.min(self.borderRadius, width / 2, height / 2)
   local bezier = 0.5522847498
 
-  local topLeft = {
-    x = math.min(radii.topLeft.x, maxXRadius),
-    y = math.min(radii.topLeft.y, maxYRadius),
-  }
-  local topRight = {
-    x = math.min(radii.topRight.x, maxXRadius),
-    y = math.min(radii.topRight.y, maxYRadius),
-  }
-  local bottomRight = {
-    x = math.min(radii.bottomRight.x, maxXRadius),
-    y = math.min(radii.bottomRight.y, maxYRadius),
-  }
-  local bottomLeft = {
-    x = math.min(radii.bottomLeft.x, maxXRadius),
-    y = math.min(radii.bottomLeft.y, maxYRadius),
-  }
-
   self.border.canvas[1].coordinates = {
-    { x = topLeft.x, y = 0 },
-    { x = width - topRight.x, y = 0 },
+    { x = radius, y = 0 },
+    { x = width - radius, y = 0 },
     {
       x = width,
-      y = topRight.y,
-      c1x = width - topRight.x + bezier * topRight.x,
+      y = radius,
+      c1x = width - radius + bezier * radius,
       c1y = 0,
       c2x = width,
-      c2y = topRight.y - bezier * topRight.y,
+      c2y = radius - bezier * radius,
     },
-    { x = width, y = height - bottomRight.y },
+    { x = width, y = height - radius },
     {
-      x = width - bottomRight.x,
+      x = width - radius,
       y = height,
       c1x = width,
-      c1y = height - bottomRight.y + bezier * bottomRight.y,
-      c2x = width - bottomRight.x + bezier * bottomRight.x,
+      c1y = height - radius + bezier * radius,
+      c2x = width - radius + bezier * radius,
       c2y = height,
     },
-    { x = bottomLeft.x, y = height },
+    { x = radius, y = height },
     {
       x = 0,
-      y = height - bottomLeft.y,
-      c1x = bottomLeft.x - bezier * bottomLeft.x,
+      y = height - radius,
+      c1x = radius - bezier * radius,
       c1y = height,
       c2x = 0,
-      c2y = height - bottomLeft.y + bezier * bottomLeft.y,
+      c2y = height - radius + bezier * radius,
     },
-    { x = 0, y = topLeft.y },
+    { x = 0, y = radius },
     {
-      x = topLeft.x,
+      x = radius,
       y = 0,
       c1x = 0,
-      c1y = topLeft.y - bezier * topLeft.y,
-      c2x = topLeft.x - bezier * topLeft.x,
+      c1y = radius - bezier * radius,
+      c2x = radius - bezier * radius,
       c2y = 0,
     },
   }
 end
 
-function WindowHighlight:animateTo(targetFrame)
-  if self.animationTimer then
-    self.animationTimer:stop()
-    self.animationTimer = nil
-  end
-
-  if not self.config.animation or not self.currentFrame then
-    self.currentFrame = targetFrame
-    self:setFrame(targetFrame)
-    return
-  end
-
-  local startFrame = self.currentFrame
-  local step = 0
-  local steps = self.config.animationSteps
-  local interval = self.config.animationDuration / steps
-
-  self.animationTimer = hs.timer.doEvery(interval, function()
-    step = step + 1
-    local t = easeOutCubic(step / steps)
-    local frame = {
-      x = lerp(startFrame.x, targetFrame.x, t),
-      y = lerp(startFrame.y, targetFrame.y, t),
-      w = lerp(startFrame.w, targetFrame.w, t),
-      h = lerp(startFrame.h, targetFrame.h, t),
-    }
-
-    self.currentFrame = frame
-    self:setFrame(frame)
-
-    if step >= steps then
-      self.animationTimer:stop()
-      self.animationTimer = nil
-      self.currentFrame = targetFrame
-      self:setFrame(targetFrame)
-    end
-  end)
-end
-
-function WindowHighlight:update(immediate)
+function WindowHighlight:update()
   if self.missionControlActive then
     self:hide()
-    self.currentFrame = nil
     return
   end
 
   local win = hs.window.focusedWindow()
   if not self:isValidWindow(win) then
     self:hide()
-    self.currentFrame = nil
     return
   end
 
-  local targetFrame = self:rectForWindow(win)
-  self:updateCornerRadii(win, targetFrame)
-  if not immediate then
-    self:animateTo(targetFrame)
-    return
-  end
-
-  if self.animationTimer then
-    self.animationTimer:stop()
-    self.animationTimer = nil
-  end
-
-  self.currentFrame = targetFrame
+  local targetFrame, targetRadius = self:rectForWindow(win)
+  self.borderRadius = targetRadius
   self:setFrame(targetFrame)
 end
 
@@ -323,16 +200,15 @@ function WindowHighlight:watchFocusedWindowLive()
       end
 
       self.watchedWindowId = nil
-      self.currentFrame = nil
       self:hide()
 
       hs.timer.doAfter(0.05, function()
         self:watchFocusedWindowLive()
-        self:update(true)
+        self:update()
       end)
     elseif event == hs.uielement.watcher.windowMoved
       or event == hs.uielement.watcher.windowResized then
-      self:update(true)
+      self:update()
     end
   end)
 
@@ -351,7 +227,7 @@ function WindowHighlight:start()
     hs.window.filter.windowTitleChanged,
     hs.window.filter.windowUnfocused,
   }, function()
-    self:update(false)
+    self:update()
   end)
 
   windowFilter:subscribe(hs.window.filter.windowFocused, function()
@@ -364,14 +240,14 @@ function WindowHighlight:start()
   local applicationWatcher = hs.application.watcher.new(function()
     hs.timer.doAfter(0.05, function()
       self:watchFocusedWindowLive()
-      self:update(false)
+      self:update()
     end)
   end)
   applicationWatcher:start()
 
   local spacesWatcher = hs.spaces.watcher.new(function()
     hs.timer.doAfter(0.15, function()
-      self:update(false)
+      self:update()
     end)
   end)
   spacesWatcher:start()
@@ -383,13 +259,12 @@ function WindowHighlight:start()
     if not ok or isOpen == self.missionControlActive then return end
 
     self.missionControlActive = isOpen
-    self.currentFrame = nil
 
     if self.missionControlActive then
       self:hide()
     else
       hs.timer.doAfter(0.15, function()
-        self:update(false)
+        self:update()
       end)
     end
   end)
@@ -406,7 +281,7 @@ function WindowHighlight:start()
         self.lastPolledWindowId = windowId
         self.lastPolledFrame = win and win:frame() or nil
         self:watchFocusedWindowLive()
-        self:update(true)
+        self:update()
         return
       end
 
@@ -416,7 +291,7 @@ function WindowHighlight:start()
       if sameFrame(frame, self.lastPolledFrame) then return end
 
       self.lastPolledFrame = frame
-      self:update(true)
+      self:update()
     end
   )
 
@@ -429,7 +304,7 @@ function WindowHighlight:start()
   }
 
   hs.timer.doAfter(0.5, function()
-    self:update(false)
+    self:update()
     self:watchFocusedWindowLive()
   end)
 
