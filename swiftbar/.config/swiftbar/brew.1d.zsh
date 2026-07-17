@@ -9,6 +9,7 @@
 # <swiftbar.hideLastUpdated>true</swiftbar.hideLastUpdated>
 
 set -u
+zmodload zsh/datetime
 
 PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
@@ -33,25 +34,34 @@ SF_SIZE=15
 mkdir -p "${CACHE_DIR}" "${STATE_DIR}"
 
 escape_swiftbar() {
-  printf '%s' "$1" | sed 's/|/\\|/g'
+  local value="$1"
+  printf '%s' "${value//\|/\\|}"
 }
 
 escape_attribute() {
-  printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/|/\\|/g'
+  local value="$1"
+  local backslash='\'
+  local quote='"'
+  local pipe='|'
+
+  value="${value//${backslash}/${backslash}${backslash}}"
+  value="${value//${quote}/${backslash}${quote}}"
+  printf '%s' "${value//${pipe}/${backslash}${pipe}}"
 }
 
 is_auto_enabled() {
-  [ -f "${AUTO_FILE}" ]
+  [[ -f "${AUTO_FILE}" ]]
 }
 
 is_manual_check_running() {
-  [ -f "${MANUAL_CHECK_FILE}" ]
+  [[ -f "${MANUAL_CHECK_FILE}" ]]
 }
 
 is_upgrade_running() {
-  [ -d "${UPGRADE_LOCK_DIR}" ] || return 1
+  [[ -d "${UPGRADE_LOCK_DIR}" ]] || return 1
 
-  upgrade_pid="$(cat "${UPGRADE_PID_FILE}" 2>/dev/null || true)"
+  local upgrade_pid
+  upgrade_pid="$(<"${UPGRADE_PID_FILE}" 2>/dev/null || true)"
   case "${upgrade_pid}" in
     *[!0-9]*|'') return 0 ;;
   esac
@@ -60,7 +70,7 @@ is_upgrade_running() {
     return 0
   fi
 
-  rm -f "${UPGRADE_PID_FILE}"
+  rm -f -- "${UPGRADE_PID_FILE:?}" # noka: ZC1059
   rmdir "${UPGRADE_LOCK_DIR}" 2>/dev/null || true
   return 1
 }
@@ -70,25 +80,26 @@ is_brew_busy() {
 }
 
 acquire_upgrade_lock() {
-  allow_during_check="${1:-false}"
+  local allow_during_check="${1:-false}"
 
-  if [ "${allow_during_check}" != "true" ] && { is_manual_check_running || [ -d "${LOCK_DIR}" ]; }; then
+  if [[ "${allow_during_check}" != "true" ]] && { is_manual_check_running || [[ -d "${LOCK_DIR}" ]]; }; then
     return 1
   fi
 
-  if ! mkdir "${UPGRADE_LOCK_DIR}" 2>/dev/null; then
+  if ! mkdir "${UPGRADE_LOCK_DIR}" 2>/dev/null; then # noka: ZC1147
     is_upgrade_running && return 1
-    mkdir "${UPGRADE_LOCK_DIR}" 2>/dev/null || return 1
+    mkdir "${UPGRADE_LOCK_DIR}" 2>/dev/null || return 1 # noka: ZC1147
   fi
 
   printf '%s\n' "$$" > "${UPGRADE_PID_FILE}"
 }
 
 release_upgrade_lock() {
-  upgrade_pid="$(cat "${UPGRADE_PID_FILE}" 2>/dev/null || true)"
-  [ "${upgrade_pid}" = "$$" ] || return 0
+  local upgrade_pid
+  upgrade_pid="$(<"${UPGRADE_PID_FILE}" 2>/dev/null || true)"
+  [[ "${upgrade_pid}" = "$$" ]] || return 0
 
-  rm -f "${UPGRADE_PID_FILE}"
+  rm -f -- "${UPGRADE_PID_FILE:?}" # noka: ZC1059
   rmdir "${UPGRADE_LOCK_DIR}" 2>/dev/null || true
 }
 
@@ -98,22 +109,22 @@ log_busy_upgrade() {
 }
 
 refresh_plugin() {
-  plugin_name="${PLUGIN_PATH:t}"
+  local plugin_name="${PLUGIN_PATH:t}"
   /usr/bin/open -g "swiftbar://refreshplugin?name=${plugin_name}" >/dev/null 2>&1 || true
 }
 
 start_manual_check() {
   is_manual_check_running && return 0
 
-  touch "${MANUAL_CHECK_FILE}"
-  nohup "${PLUGIN_PATH}" --check-now-worker >/dev/null 2>&1 &
+  : >| "${MANUAL_CHECK_FILE}"
+  "${PLUGIN_PATH}" --check-now-worker >/dev/null 2>&1 &!
 }
 
 run_manual_check_worker() {
-  rm -f "${CHECKED_AT_FILE}"
+  rm -f -- "${CHECKED_AT_FILE:?}" # noka: ZC1059
   perform_daily_check
-  check_status=$?
-  rm -f "${MANUAL_CHECK_FILE}"
+  local check_status=$?
+  rm -f -- "${MANUAL_CHECK_FILE:?}" # noka: ZC1059
   refresh_plugin
   return "${check_status}"
 }
@@ -123,7 +134,7 @@ write_error() {
 }
 
 clear_error() {
-  rm -f "${ERROR_FILE}"
+  rm -f -- "${ERROR_FILE:?}" # noka: ZC1059
 }
 
 record_check_time() {
@@ -143,16 +154,17 @@ collect_outdated() {
     return 1
   fi
 
-  mv "${FORMULAE_FILE}.tmp" "${FORMULAE_FILE}"
-  mv "${CASKS_FILE}.tmp" "${CASKS_FILE}"
+  mv "${FORMULAE_FILE}.tmp" "${FORMULAE_FILE}" # noka: ZC1244
+  mv "${CASKS_FILE}.tmp" "${CASKS_FILE}" # noka: ZC1244
   rm -f "${ERROR_FILE}.tmp"
   clear_error
 }
 
 run_upgrade_all() {
-  upgrade_mode="${1:-manual}"
+  local upgrade_mode="${1:-manual}"
+  local allow_during_check
 
-  if [ "${upgrade_mode}" = "auto" ]; then
+  if [[ "${upgrade_mode}" = "auto" ]]; then
     allow_during_check=true
   else
     allow_during_check=false
@@ -166,13 +178,13 @@ run_upgrade_all() {
 
   {
     printf '\n[%s] Starting Homebrew upgrade\n' "$(date '+%Y-%m-%d %H:%M:%S')"
-    if [ "${upgrade_mode}" = "auto" ]; then
+    if [[ "${upgrade_mode}" = "auto" ]]; then
       "${BREW_BIN}" upgrade --yes
     else
       "${BREW_BIN}" update && "${BREW_BIN}" upgrade --yes
     fi
   } >> "${LOG_FILE}" 2>&1
-  upgrade_status=$?
+  local upgrade_status=$?
 
   collect_outdated || true
   record_check_time
@@ -182,13 +194,14 @@ run_upgrade_all() {
 }
 
 run_upgrade_one() {
-  package_name="$1"
-  package_type="$2"
+  local package_name="$1"
+  local package_type="$2"
+  local type_flag
 
   case "${package_name}" in
     *[!A-Za-z0-9@+._/-]*|'')
       printf 'Invalid Homebrew package name: %s\n' "${package_name}" >&2
-      exit 2
+      return 2
       ;;
   esac
 
@@ -197,7 +210,7 @@ run_upgrade_one() {
     cask) type_flag="--cask" ;;
     *)
       printf 'Invalid package type: %s\n' "${package_type}" >&2
-      exit 2
+      return 2
       ;;
   esac
 
@@ -211,7 +224,7 @@ run_upgrade_one() {
     printf '\n[%s] Upgrading %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "${package_name}"
     "${BREW_BIN}" upgrade --yes "${type_flag}" "${package_name}"
   } >> "${LOG_FILE}" 2>&1
-  upgrade_status=$?
+  local upgrade_status=$?
 
   collect_outdated || true
   record_check_time
@@ -221,14 +234,15 @@ run_upgrade_one() {
 }
 
 perform_daily_check() {
-  if ! mkdir "${LOCK_DIR}" 2>/dev/null; then
+  if ! mkdir "${LOCK_DIR}" 2>/dev/null; then # noka: ZC1147
     return 0
   fi
   trap 'rmdir "${LOCK_DIR}" 2>/dev/null || true' EXIT
 
+  local update_output update_status
   update_output="$("${BREW_BIN}" update 2>&1)"
   update_status=$?
-  if [ "${update_status}" -ne 0 ]; then
+  if (( update_status != 0 )); then
     write_error "$(printf '%s\n' "${update_output}" | tail -n 1)"
     record_check_time
     return 1
@@ -240,66 +254,74 @@ perform_daily_check() {
   }
   record_check_time
 
-  if is_auto_enabled && [ "$(outdated_count)" -gt 0 ]; then
+  if is_auto_enabled && (( $(outdated_count) > 0 )); then
     run_upgrade_all auto
   fi
 }
 
 check_is_due() {
-  [ ! -f "${CHECKED_AT_FILE}" ] && return 0
+  [[ ! -f "${CHECKED_AT_FILE}" ]] && return 0
 
-  checked_at="$(cat "${CHECKED_AT_FILE}" 2>/dev/null || printf '0')"
+  local checked_at
+  checked_at="$(<"${CHECKED_AT_FILE}" 2>/dev/null || printf '0')"
   case "${checked_at}" in
     *[!0-9]*|'') return 0 ;;
   esac
 
+  local now
   now="$(date +%s)"
-  [ $((now - checked_at)) -ge "${CHECK_INTERVAL_SECONDS}" ]
+  (( now - checked_at >= CHECK_INTERVAL_SECONDS ))
 }
 
 file_line_count() {
-  if [ -s "$1" ]; then
-    wc -l < "$1" | tr -d ' '
+  if [[ -s "$1" ]]; then
+    local count
+    count="$(wc -l < "$1")"
+    printf '%s' "${count// /}"
   else
     printf '0'
   fi
 }
 
 outdated_count() {
+  local formula_count cask_count
   formula_count="$(file_line_count "${FORMULAE_FILE}")"
   cask_count="$(file_line_count "${CASKS_FILE}")"
   printf '%s' $((formula_count + cask_count))
 }
 
 format_checked_at() {
-  if [ ! -f "${CHECKED_AT_FILE}" ]; then
+  if [[ ! -f "${CHECKED_AT_FILE}" ]]; then
     printf 'Never'
     return
   fi
 
-  checked_at="$(cat "${CHECKED_AT_FILE}")"
-  date -r "${checked_at}" '+%Y-%m-%d %H:%M' 2>/dev/null || printf 'Unknown'
+  local checked_at
+  checked_at="$(<"${CHECKED_AT_FILE}")"
+  strftime '%Y-%m-%d %H:%M' "${checked_at}" 2>/dev/null || printf 'Unknown'
 }
 
 render_package_menu() {
-  package_file="$1"
-  package_type="$2"
-  heading="$3"
+  local package_file="$1"
+  local package_type="$2"
+  local heading="$3"
 
-  [ -s "${package_file}" ] || return 0
+  [[ -s "${package_file}" ]] || return 0
 
+  local script_path
   script_path="$(escape_attribute "${PLUGIN_PATH}")"
-  if [ "${package_type}" = "formula" ]; then
-    heading_symbol="shippingbox"
-    package_symbol="cube.box"
+  if [[ "${package_type}" = "formula" ]]; then
+    local heading_symbol="shippingbox"
+    local package_symbol="cube.box"
   else
-    heading_symbol="macwindow"
-    package_symbol="app"
+    local heading_symbol="macwindow"
+    local package_symbol="app"
   fi
 
   printf ':%s: %s | sfsize=%s\n' "${heading_symbol}" "${heading}" "${SF_SIZE}"
+  local package_name safe_name
   while IFS= read -r package_name; do
-    [ -n "${package_name}" ] || continue
+    [[ -n "${package_name}" ]] || continue
     safe_name="$(escape_swiftbar "${package_name}")"
     if is_brew_busy; then
       printf -- '--:%s: %s | sfsize=%s disabled=true\n' "${package_symbol}" "${safe_name}" "${SF_SIZE}"
@@ -311,13 +333,14 @@ render_package_menu() {
 }
 
 render_menu() {
+  local count checked_at script_path
   count="$(outdated_count)"
   checked_at="$(format_checked_at)"
   script_path="$(escape_attribute "${PLUGIN_PATH}")"
 
   if is_brew_busy; then
     printf ':arrow.triangle.2.circlepath: … | sfsize=%s tooltip="Homebrew operation in progress…"\n' "${SF_SIZE}"
-  elif [ "${count}" -eq 0 ]; then
+  elif (( count == 0 )); then
     printf ':shippingbox.fill: 0 | sfsize=%s tooltip="Homebrew is up to date"\n' "${SF_SIZE}"
   else
     printf ':shippingbox.fill: %s | sfsize=%s tooltip="%s Homebrew package(s) outdated"\n' "${count}" "${SF_SIZE}" "${count}"
@@ -328,7 +351,8 @@ render_menu() {
   printf -- '--:number.circle: Outdated: %s | sfsize=%s\n' "${count}" "${SF_SIZE}"
   printf -- '--:clock: Last check: %s | sfsize=%s\n' "${checked_at}" "${SF_SIZE}"
 
-  if [ -s "${ERROR_FILE}" ]; then
+  if [[ -s "${ERROR_FILE}" ]]; then
+    local error_message
     error_message="$(escape_swiftbar "$(tail -n 1 "${ERROR_FILE}")")"
     printf -- '--:exclamationmark.triangle.fill: Last check failed: %s | sfsize=%s color=#FF3B30\n' "${error_message}" "${SF_SIZE}"
   fi
@@ -346,7 +370,7 @@ render_menu() {
     printf ':arrow.clockwise: Check for updates now | sfsize=%s bash="%s" param1=--check-now terminal=false refresh=true\n' "${SF_SIZE}" "${script_path}"
   fi
 
-  if [ "${count}" -gt 0 ]; then
+  if (( count > 0 )); then
     if is_brew_busy; then
       printf ':arrow.up: Upgrade all in background | sfsize=%s disabled=true\n' "${SF_SIZE}"
     else
@@ -357,14 +381,15 @@ render_menu() {
     render_package_menu "${CASKS_FILE}" cask 'Casks'
   fi
 
-  if [ -f "${LOG_FILE}" ]; then
+  if [[ -f "${LOG_FILE}" ]]; then
+    local log_path
     log_path="$(escape_attribute "${LOG_FILE}")"
     printf -- '---\n'
     printf ':doc.text: Open upgrade log | sfsize=%s bash=/usr/bin/open param1="%s" terminal=false\n' "${SF_SIZE}" "${log_path}"
   fi
 }
 
-if [ -z "${BREW_BIN}" ]; then
+if [[ -z "${BREW_BIN}" ]]; then
   printf ':exclamationmark.triangle.fill: ! | sfsize=%s color=#FF3B30\n' "${SF_SIZE}"
   printf -- '---\nHomebrew was not found in /opt/homebrew or /usr/local.\n'
   exit 0
@@ -372,11 +397,11 @@ fi
 
 case "${1:-}" in
   --enable-auto)
-    touch "${AUTO_FILE}"
+    : >| "${AUTO_FILE}"
     exit 0
     ;;
   --disable-auto)
-    rm -f "${AUTO_FILE}"
+    rm -f -- "${AUTO_FILE:?}" # noka: ZC1059
     exit 0
     ;;
   --check-now)
