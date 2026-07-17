@@ -5,6 +5,8 @@
 # <xbar.author>trivk</xbar.author>
 # <xbar.desc>Checks Homebrew daily and offers manual or automatic upgrades.</xbar.desc>
 # <xbar.dependencies>zsh,brew</xbar.dependencies>
+# <swiftbar.hideAbout>true</swiftbar.hideAbout>
+# <swiftbar.hideLastUpdated>true</swiftbar.hideLastUpdated>
 
 set -u
 
@@ -26,6 +28,7 @@ LOCK_DIR="${CACHE_DIR}/check.lock"
 UPGRADE_LOCK_DIR="${CACHE_DIR}/upgrade.lock"
 UPGRADE_PID_FILE="${UPGRADE_LOCK_DIR}/pid"
 CHECK_INTERVAL_SECONDS=86400
+SF_SIZE=15
 
 mkdir -p "${CACHE_DIR}" "${STATE_DIR}"
 
@@ -294,15 +297,15 @@ render_package_menu() {
     package_symbol="app"
   fi
 
-  printf '%s | sfimage=%s\n' "${heading}" "${heading_symbol}"
+  printf ':%s: %s | sfsize=%s\n' "${heading_symbol}" "${heading}" "${SF_SIZE}"
   while IFS= read -r package_name; do
     [ -n "${package_name}" ] || continue
     safe_name="$(escape_swiftbar "${package_name}")"
     if is_brew_busy; then
-      printf -- '--%s | sfimage=%s disabled=true\n' "${safe_name}" "${package_symbol}"
+      printf -- '--:%s: %s | sfsize=%s disabled=true\n' "${package_symbol}" "${safe_name}" "${SF_SIZE}"
     else
-      printf -- '--%s | sfimage=%s bash="%s" param1=--upgrade-one param2=%s param3=%s terminal=false refresh=true\n' \
-        "${safe_name}" "${package_symbol}" "${script_path}" "${safe_name}" "${package_type}"
+      printf -- '--:%s: %s | sfsize=%s bash="%s" param1=--upgrade-one param2=%s param3=%s terminal=false refresh=true\n' \
+        "${package_symbol}" "${safe_name}" "${SF_SIZE}" "${script_path}" "${safe_name}" "${package_type}"
     fi
   done < "${package_file}"
 }
@@ -313,41 +316,41 @@ render_menu() {
   script_path="$(escape_attribute "${PLUGIN_PATH}")"
 
   if is_brew_busy; then
-    printf '… | sfimage=arrow.triangle.2.circlepath sfcolor=#007AFF sfsize=14 tooltip="Homebrew operation in progress…"\n'
+    printf ':arrow.triangle.2.circlepath: … | sfsize=%s tooltip="Homebrew operation in progress…"\n' "${SF_SIZE}"
   elif [ "${count}" -eq 0 ]; then
-    printf '0 | sfimage=shippingbox.fill sfcolor=#34C759 sfsize=14 tooltip="Homebrew is up to date"\n'
+    printf ':shippingbox.fill: 0 | sfsize=%s tooltip="Homebrew is up to date"\n' "${SF_SIZE}"
   else
-    printf '%s | sfimage=shippingbox.fill sfcolor=#FF9500 sfsize=14 tooltip="%s Homebrew package(s) outdated"\n' "${count}" "${count}"
+    printf ':shippingbox.fill: %s | sfsize=%s tooltip="%s Homebrew package(s) outdated"\n' "${count}" "${SF_SIZE}" "${count}"
   fi
 
   printf -- '---\n'
-  printf 'Homebrew Updates | sfimage=shippingbox.fill sfcolor=#007AFF size=14\n'
-  printf -- '--Outdated: %s | sfimage=number.circle\n' "${count}"
-  printf -- '--Last check: %s | sfimage=clock\n' "${checked_at}"
+  printf ':shippingbox.fill: Homebrew Updates | sfsize=%s size=14\n' "${SF_SIZE}"
+  printf -- '--:number.circle: Outdated: %s | sfsize=%s\n' "${count}" "${SF_SIZE}"
+  printf -- '--:clock: Last check: %s | sfsize=%s\n' "${checked_at}" "${SF_SIZE}"
 
   if [ -s "${ERROR_FILE}" ]; then
     error_message="$(escape_swiftbar "$(tail -n 1 "${ERROR_FILE}")")"
-    printf -- '--Last check failed: %s | sfimage=exclamationmark.triangle.fill sfcolor=#FF3B30 color=#FF3B30\n' "${error_message}"
+    printf -- '--:exclamationmark.triangle.fill: Last check failed: %s | sfsize=%s color=#FF3B30\n' "${error_message}" "${SF_SIZE}"
   fi
 
   printf -- '---\n'
   if is_auto_enabled; then
-    printf 'Auto upgrade | checked=true sfimage=arrow.triangle.2.circlepath sfcolor=#34C759 bash="%s" param1=--disable-auto terminal=false refresh=true\n' "${script_path}"
+    printf ':checkmark.circle.fill: Auto upgrade | sfsize=%s bash="%s" param1=--disable-auto terminal=false refresh=true\n' "${SF_SIZE}" "${script_path}"
   else
-    printf 'Auto upgrade | checked=false sfimage=arrow.triangle.2.circlepath sfcolor=#8E8E93 bash="%s" param1=--enable-auto terminal=false refresh=true\n' "${script_path}"
+    printf ':circle: Auto upgrade | sfsize=%s bash="%s" param1=--enable-auto terminal=false refresh=true\n' "${SF_SIZE}" "${script_path}"
   fi
 
   if is_brew_busy; then
-    printf 'Check for updates now | sfimage=arrow.clockwise disabled=true\n'
+    printf ':arrow.clockwise: Check for updates now | sfsize=%s disabled=true\n' "${SF_SIZE}"
   else
-    printf 'Check for updates now | sfimage=arrow.clockwise bash="%s" param1=--check-now terminal=false refresh=true\n' "${script_path}"
+    printf ':arrow.clockwise: Check for updates now | sfsize=%s bash="%s" param1=--check-now terminal=false refresh=true\n' "${SF_SIZE}" "${script_path}"
   fi
 
   if [ "${count}" -gt 0 ]; then
     if is_brew_busy; then
-      printf 'Upgrade all in background | sfimage=arrow.up sfcolor=#007AFF disabled=true\n'
+      printf ':arrow.up: Upgrade all in background | sfsize=%s disabled=true\n' "${SF_SIZE}"
     else
-      printf 'Upgrade all in background | sfimage=arrow.up sfcolor=#007AFF bash="%s" param1=--upgrade-all terminal=false refresh=true\n' "${script_path}"
+      printf ':arrow.up: Upgrade all in background | sfsize=%s bash="%s" param1=--upgrade-all terminal=false refresh=true\n' "${SF_SIZE}" "${script_path}"
     fi
     printf -- '---\n'
     render_package_menu "${FORMULAE_FILE}" formula 'Formulae'
@@ -357,12 +360,12 @@ render_menu() {
   if [ -f "${LOG_FILE}" ]; then
     log_path="$(escape_attribute "${LOG_FILE}")"
     printf -- '---\n'
-    printf 'Open upgrade log | sfimage=doc.text bash=/usr/bin/open param1="%s" terminal=false\n' "${log_path}"
+    printf ':doc.text: Open upgrade log | sfsize=%s bash=/usr/bin/open param1="%s" terminal=false\n' "${SF_SIZE}" "${log_path}"
   fi
 }
 
 if [ -z "${BREW_BIN}" ]; then
-  printf '! | sfimage=exclamationmark.triangle.fill sfcolor=#FF3B30 color=#FF3B30\n'
+  printf ':exclamationmark.triangle.fill: ! | sfsize=%s color=#FF3B30\n' "${SF_SIZE}"
   printf -- '---\nHomebrew was not found in /opt/homebrew or /usr/local.\n'
   exit 0
 fi
