@@ -23,6 +23,8 @@ MANUAL_CHECK_FILE="${CACHE_DIR}/manual-check-running"
 AUTO_FILE="${STATE_DIR}/auto-upgrade-enabled"
 LOG_FILE="${STATE_DIR}/upgrade.log"
 LOCK_DIR="${CACHE_DIR}/check.lock"
+UPGRADE_LOCK_DIR="${CACHE_DIR}/upgrade.lock"
+UPGRADE_PID_FILE="${UPGRADE_LOCK_DIR}/pid"
 CHECK_INTERVAL_SECONDS=86400
 
 mkdir -p "${CACHE_DIR}" "${STATE_DIR}"
@@ -41,6 +43,55 @@ is_auto_enabled() {
 
 is_manual_check_running() {
   [ -f "${MANUAL_CHECK_FILE}" ]
+}
+
+is_upgrade_running() {
+  [ -d "${UPGRADE_LOCK_DIR}" ] || return 1
+
+  upgrade_pid="$(cat "${UPGRADE_PID_FILE}" 2>/dev/null || true)"
+  case "${upgrade_pid}" in
+    *[!0-9]*|'') return 0 ;;
+  esac
+
+  if kill -0 "${upgrade_pid}" 2>/dev/null; then
+    return 0
+  fi
+
+  rm -f "${UPGRADE_PID_FILE}"
+  rmdir "${UPGRADE_LOCK_DIR}" 2>/dev/null || true
+  return 1
+}
+
+is_brew_busy() {
+  is_manual_check_running || is_upgrade_running
+}
+
+acquire_upgrade_lock() {
+  allow_during_check="${1:-false}"
+
+  if [ "${allow_during_check}" != "true" ] && { is_manual_check_running || [ -d "${LOCK_DIR}" ]; }; then
+    return 1
+  fi
+
+  if ! mkdir "${UPGRADE_LOCK_DIR}" 2>/dev/null; then
+    is_upgrade_running && return 1
+    mkdir "${UPGRADE_LOCK_DIR}" 2>/dev/null || return 1
+  fi
+
+  printf '%s\n' "$$" > "${UPGRADE_PID_FILE}"
+}
+
+release_upgrade_lock() {
+  upgrade_pid="$(cat "${UPGRADE_PID_FILE}" 2>/dev/null || true)"
+  [ "${upgrade_pid}" = "$$" ] || return 0
+
+  rm -f "${UPGRADE_PID_FILE}"
+  rmdir "${UPGRADE_LOCK_DIR}" 2>/dev/null || true
+}
+
+log_busy_upgrade() {
+  printf '\n[%s] Skipped %s: another Homebrew operation is already running\n' \
+    "$(date '+%Y-%m-%d %H:%M:%S')" "$1" >> "${LOG_FILE}"
 }
 
 refresh_plugin() {
@@ -98,6 +149,18 @@ collect_outdated() {
 run_upgrade_all() {
   upgrade_mode="${1:-manual}"
 
+  if [ "${upgrade_mode}" = "auto" ]; then
+    allow_during_check=true
+  else
+    allow_during_check=false
+  fi
+
+  if ! acquire_upgrade_lock "${allow_during_check}"; then
+    log_busy_upgrade "Homebrew upgrade"
+    return 75
+  fi
+  refresh_plugin
+
   {
     printf '\n[%s] Starting Homebrew upgrade\n' "$(date '+%Y-%m-%d %H:%M:%S')"
     if [ "${upgrade_mode}" = "auto" ]; then
@@ -110,6 +173,8 @@ run_upgrade_all() {
 
   collect_outdated || true
   record_check_time
+  release_upgrade_lock
+  refresh_plugin
   return "${upgrade_status}"
 }
 
@@ -133,6 +198,12 @@ run_upgrade_one() {
       ;;
   esac
 
+  if ! acquire_upgrade_lock; then
+    log_busy_upgrade "upgrade of ${package_name}"
+    return 75
+  fi
+  refresh_plugin
+
   {
     printf '\n[%s] Upgrading %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "${package_name}"
     "${BREW_BIN}" upgrade --yes "${type_flag}" "${package_name}"
@@ -141,6 +212,8 @@ run_upgrade_one() {
 
   collect_outdated || true
   record_check_time
+  release_upgrade_lock
+  refresh_plugin
   return "${upgrade_status}"
 }
 
@@ -225,8 +298,12 @@ render_package_menu() {
   while IFS= read -r package_name; do
     [ -n "${package_name}" ] || continue
     safe_name="$(escape_swiftbar "${package_name}")"
-    printf -- '--%s | sfimage=%s bash="%s" param1=--upgrade-one param2=%s param3=%s terminal=false refresh=true\n' \
-      "${safe_name}" "${package_symbol}" "${script_path}" "${safe_name}" "${package_type}"
+    if is_brew_busy; then
+      printf -- '--%s | sfimage=%s disabled=true\n' "${safe_name}" "${package_symbol}"
+    else
+      printf -- '--%s | sfimage=%s bash="%s" param1=--upgrade-one param2=%s param3=%s terminal=false refresh=true\n' \
+        "${safe_name}" "${package_symbol}" "${script_path}" "${safe_name}" "${package_type}"
+    fi
   done < "${package_file}"
 }
 
@@ -235,8 +312,8 @@ render_menu() {
   checked_at="$(format_checked_at)"
   script_path="$(escape_attribute "${PLUGIN_PATH}")"
 
-  if is_manual_check_running; then
-    printf '… | sfimage=arrow.triangle.2.circlepath sfcolor=#007AFF sfsize=14 tooltip="Checking Homebrew updates…"\n'
+  if is_brew_busy; then
+    printf '… | sfimage=arrow.triangle.2.circlepath sfcolor=#007AFF sfsize=14 tooltip="Homebrew operation in progress…"\n'
   elif [ "${count}" -eq 0 ]; then
     printf '0 | sfimage=shippingbox.fill sfcolor=#34C759 sfsize=14 tooltip="Homebrew is up to date"\n'
   else
@@ -260,14 +337,18 @@ render_menu() {
     printf 'Auto upgrade | checked=false sfimage=arrow.triangle.2.circlepath sfcolor=#8E8E93 bash="%s" param1=--enable-auto terminal=false refresh=true\n' "${script_path}"
   fi
 
-  if is_manual_check_running; then
+  if is_brew_busy; then
     printf 'Check for updates now | sfimage=arrow.clockwise disabled=true\n'
   else
     printf 'Check for updates now | sfimage=arrow.clockwise bash="%s" param1=--check-now terminal=false refresh=true\n' "${script_path}"
   fi
 
   if [ "${count}" -gt 0 ]; then
-    printf 'Upgrade all in background | sfimage=arrow.up sfcolor=#007AFF bash="%s" param1=--upgrade-all terminal=false refresh=true\n' "${script_path}"
+    if is_brew_busy; then
+      printf 'Upgrade all in background | sfimage=arrow.up sfcolor=#007AFF disabled=true\n'
+    else
+      printf 'Upgrade all in background | sfimage=arrow.up sfcolor=#007AFF bash="%s" param1=--upgrade-all terminal=false refresh=true\n' "${script_path}"
+    fi
     printf -- '---\n'
     render_package_menu "${FORMULAE_FILE}" formula 'Formulae'
     render_package_menu "${CASKS_FILE}" cask 'Casks'
