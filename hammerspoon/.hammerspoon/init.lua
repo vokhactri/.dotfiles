@@ -8,7 +8,7 @@ local appNameToast = AppNameToast.new(config.appNameToast)
 local windowHighlight = WindowHighlight.new(config.windowHighlight, {
   onWindowFocused = function()
     if config.appNameToast.showOnFocus then
-      appNameToast:show()
+      appNameToast:showOnFocus()
     end
   end,
 })

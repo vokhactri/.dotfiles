@@ -8,6 +8,7 @@ function AppNameToast.new(config)
     optionKeyDown = false,
     optionKeyWatcher = nil,
     shouldShow = nil,
+    focusedAppPid = nil,
   }, AppNameToast)
 end
 
@@ -15,13 +16,17 @@ function AppNameToast:setShouldShow(predicate)
   self.shouldShow = predicate
 end
 
-function AppNameToast:show()
+function AppNameToast:_show(skipIfAppUnchanged)
   if not self.config.enabled then return end
   if self.shouldShow and not self.shouldShow() then return end
 
   local win = hs.window.focusedWindow()
   local app = win and win:application() or nil
   if not app then return end
+
+  local appPid = app:pid()
+  if skipIfAppUnchanged and appPid == self.focusedAppPid then return end
+  self.focusedAppPid = appPid
 
   if self.alertId then
     hs.alert.closeSpecific(self.alertId, 0)
@@ -33,6 +38,14 @@ function AppNameToast:show()
     win:screen(),
     self.config.duration
   )
+end
+
+function AppNameToast:show()
+  self:_show(false)
+end
+
+function AppNameToast:showOnFocus()
+  self:_show(true)
 end
 
 function AppNameToast:start()
