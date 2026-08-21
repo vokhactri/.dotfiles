@@ -28,7 +28,7 @@ zinit for \
     from'gh-r' \
     mv'**/_fastfetch -> _fastfetch' \
     atpull'%atclone' \
-    lbin'**bin/fastfetch -> fastfetch' \
+    lbin'!**bin/fastfetch -> fastfetch' \
     @fastfetch-cli/fastfetch
 
 zinit for \
