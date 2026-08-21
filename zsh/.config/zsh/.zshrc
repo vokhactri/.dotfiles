@@ -24,11 +24,11 @@ zinit id-as from'gh-r' lbin'!' completions for \
 
 zinit for \
     id-as \
+    as'completion' \
     from'gh-r' \
-    mv'**/bin/fastfetch -> fastfetch' \
-    atclone'for dir in fastfetch*/; do rm -rf "$dir"; done' \
+    mv'**/_fastfetch -> _fastfetch' \
     atpull'%atclone' \
-    sbin'fastfetch' \
+    lbin'**bin/fastfetch -> fastfetch' \
     @fastfetch-cli/fastfetch
 
 zinit for \
