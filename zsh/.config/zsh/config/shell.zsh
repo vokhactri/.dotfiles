@@ -28,3 +28,15 @@ HISTSIZE=5000000
 SAVEHIST=5000000
 
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always --icon=always $realpath'
+
+# Starship counts every entry in jobstates, including completed jobs that zsh
+# hasn't reaped yet. Run jobs before Starship's precmd hook so parallel Zinit
+# updates don't leave a stale job badge in the prompt.
+autoload -Uz add-zsh-hook
+
+_zinit_reap_done_jobs() {
+    jobs -p >/dev/null 2>&1
+}
+
+add-zsh-hook -d precmd _zinit_reap_done_jobs 2>/dev/null || true
+precmd_functions=( _zinit_reap_done_jobs ${precmd_functions:#_zinit_reap_done_jobs} )
