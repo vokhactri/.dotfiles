@@ -1,6 +1,11 @@
 #!/usr/bin/env zsh
 
 local brew_prefix="${HOMEBREW_PREFIX:-}"
+# `brew --prefix` costs ~12 ms because it runs Ruby. Check the standard
+# Apple Silicon location first, then fall back for anything else.
+if [[ -z "$brew_prefix" ]]; then
+    [[ -x /opt/homebrew/bin/brew ]] && brew_prefix=/opt/homebrew
+fi
 if [[ -z "$brew_prefix" ]] && command -v brew >/dev/null 2>&1; then
     brew_prefix="$(brew --prefix 2>/dev/null)"
 fi
@@ -16,7 +21,7 @@ if [[ -n "$brew_prefix" ]]; then
         "grep"
     )
 
-    if mkdir -p "$XDG_BIN_HOME"; then
+    if [[ -n "$XDG_BIN_HOME" ]] && mkdir -p "$XDG_BIN_HOME"; then
         for tool in $gnu_tools; do
             gnubin="$brew_prefix/opt/$tool/libexec/gnubin"
             if [[ -d "$gnubin" ]]; then
