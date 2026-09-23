@@ -5,10 +5,6 @@
 - **GNU** `stow`
 - `zsh` (I mean, duh)
 
-## Optional
-
-- `unzip` (for `fnm`)
-
 ## Installation
 
 1. clone this repo to your `$HOME` and switch to cloned dir:
