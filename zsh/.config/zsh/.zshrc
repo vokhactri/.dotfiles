@@ -39,12 +39,17 @@ zinit for \
     lbin'!' \
     @ajeetdsouza/zoxide
 
-
 zinit for \
     id-as \
     from'gh-r' \
-    sbin'pnpm' \
-    @pnpm/pnpm
+    atclone'
+        VP_SELF_SETUP_NO_MODIFY_PATH=1 ./vp env setup --refresh > /dev/null; \
+        ./vp env on > /dev/null; \
+        VP_COMPLETE=zsh "$XDG_DATA_HOME/vite-plus/bin/vp" > init.zsh;
+    ' \
+    atpull'%atclone' \
+    atload'source "$XDG_CONFIG_HOME/vite-plus/env"' \
+    @voidzero-dev/vite-plus
 
 zinit for \
     id-as \
