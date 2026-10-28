@@ -30,3 +30,24 @@ systemctl --user restart plasma-plasmashell
   removes the hook.
 - On KDE Wayland don't start fcitx5 with `fcitx5 -d`; use
   `restart-fcitx5.sh` so KWin launches it.
+
+## qBittorrent
+
+`qbittorrent-tray-mono.svg` is qBittorrent's monochrome tray icon scaled
+down to 78%, so it has the same padding as Breeze status icons instead of
+filling the whole tray slot.
+
+qBittorrent 5.x only looks the tray icon up in the icon theme when "Use
+icons from system theme" is on, so also set (qBittorrent closed, or via
+Tools > Options > Behavior):
+
+```ini
+# ~/.config/qBittorrent/qBittorrent.conf
+[Appearance]
+TrayIconStyle=Monochrome
+
+[Preferences]
+Advanced\useSystemIconTheme=true
+```
+
+`qBittorrent.conf` itself isn't stowed: qBittorrent rewrites it on exit.
