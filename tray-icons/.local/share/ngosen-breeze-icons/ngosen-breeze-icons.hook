@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = fcitx5-ngosen
+
+[Action]
+Description = Applying Breeze-style tray icons for Ngó Sen...
+When = PostTransaction
+Exec = /usr/local/share/ngosen-breeze-icons/apply.sh

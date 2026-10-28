@@ -30,6 +30,11 @@ git -C $HOME clone https://github.com/vokhactri/.dotfiles.git && cd $HOME/.dotfi
 exec zsh
 ```
 
+### `tray-icons` (tray icons that match Breeze)
+
+Some icons need an extra step after `stow tray-icons` (a root step for
+Ngó Sen); see [`tray-icons/README.md`](tray-icons/README.md).
+
 ## Credit
 
 - [Machfiles](https://github.com/ChristianChiarulli/Machfiles/)
