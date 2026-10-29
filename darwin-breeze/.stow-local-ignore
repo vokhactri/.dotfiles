@@ -5,3 +5,5 @@
 __pycache__
 ^/\.gitignore
 ^/t3
+^/telegram
+^/vscode

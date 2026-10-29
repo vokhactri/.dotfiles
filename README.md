@@ -33,7 +33,8 @@ exec zsh
 ### `darwin-breeze` + `helium` (theme and colors)
 
 The Darwin Breeze Dark KDE color scheme and global theme, and the Helium, T3
-Code and Ghostty themes generated from it. After stowing, apply it once:
+Code, Ghostty, VS Code and Telegram themes generated from it. After stowing, apply it
+once (Telegram imports its theme by hand):
 
 ```sh
 ./darwin-breeze/apply.sh

@@ -37,6 +37,12 @@ if [ -x "$t3" ]; then
     "$t3" theme set "$here/t3/darwin-breeze.json" >/dev/null
 fi
 
+# VS Code only loads themes from installed extensions. --force reinstalls the
+# same version, so color changes land without a version bump.
+if command -v code >/dev/null; then
+    code --install-extension "$here/vscode/darwin-breeze.vsix" --force >/dev/null 2>&1
+fi
+
 echo "Applied Darwin Breeze"
 if pgrep -x helium >/dev/null; then
     echo "Restart Helium to pick up its theme"
