@@ -1,0 +1,17 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "trivk"
+            }
+        ],
+        "Category": "",
+        "Description": "Breeze in macOS-inspired colors (dark)",
+        "Id": "dev.trivk.darwinbreeze.dark",
+        "License": "GPL-2.0-or-later",
+        "Name": "Darwin Breeze Dark",
+        "Version": "1.0"
+    },
+    "X-Plasma-APIVersion": "2"
+}

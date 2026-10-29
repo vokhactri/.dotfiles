@@ -30,6 +30,18 @@ git -C $HOME clone https://github.com/vokhactri/.dotfiles.git && cd $HOME/.dotfi
 exec zsh
 ```
 
+### `darwin-breeze` + `helium` (theme and colors)
+
+The Darwin Breeze Dark KDE color scheme and global theme, and the Helium, T3
+Code and Ghostty themes generated from it. After stowing, apply it once:
+
+```sh
+./darwin-breeze/apply.sh
+```
+
+To change colors, edit `DarwinBreezeDark.colors` and run `apply.sh` again; see
+[`darwin-breeze/README.md`](darwin-breeze/README.md).
+
 ### `tray-icons` (tray icons that match Breeze)
 
 Some icons need an extra step after `stow tray-icons` (a root step for
