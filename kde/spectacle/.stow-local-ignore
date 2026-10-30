@@ -1,0 +1,4 @@
+^/README.*
+^/apply\.py
+^/settings
+__pycache__

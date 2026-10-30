@@ -1,9 +1,0 @@
-# Build and apply scripts stay in the repo; only the dotfiles get linked.
-^/README.*
-^/apply\.sh
-^/build\.py
-__pycache__
-^/\.gitignore
-^/t3
-^/telegram
-^/vscode

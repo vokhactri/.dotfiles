@@ -1,6 +1,0 @@
-# Helium caches the built theme next to the manifest.
-Cached Theme.pak
-__pycache__/
-# Binary packages built by build.py.
-*.vsix
-*.tdesktop-theme

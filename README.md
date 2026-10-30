@@ -1,54 +1,54 @@
-# My personal opinionated dotfiles for `zsh`
+# Personal dotfiles
 
-## Requirement
-
-- **GNU** `stow`
-- `zsh` (I mean, duh)
+These are my config files for macOS and KDE, managed with GNU Stow. You need `stow` and `zsh` installed.
 
 ## Installation
 
-1. clone this repo to your `$HOME` and switch to cloned dir:
-
 ```sh
-git -C $HOME clone https://github.com/vokhactri/.dotfiles.git && cd $HOME/.dotfiles
+git clone https://github.com/vokhactri/.dotfiles.git "$HOME/.dotfiles"
+cd "$HOME/.dotfiles"
 ```
 
-2. use `stow` to symlink configs to `$HOME/.config`:
+The packages are split into three groups:
 
-- to symlink all config dirs
-  ```sh
-  stow */
-  ```
-- to symlink only one config dir, for example `zsh`
-  ```sh
-  stow zsh
-  ```
+- [common/](common/README.md) has Git, Micro, mpv, npm, Starship and Zsh.
+- [mac/](mac/README.md) has Ghostty and the original Fastfetch config.
+- [kde/](kde/README.md) has the Darwin Breeze theme, Helium, Konsole Fastfetch, Spectacle and tray icons.
 
-3. reload your `zsh` to apply changes:
+Install all of `common`, then the group for your platform:
 
 ```sh
-exec zsh
+(cd common && stow -t "$HOME" */)
+(cd mac && stow -t "$HOME" */)   # macOS
+(cd kde && stow -t "$HOME" */)   # KDE
 ```
 
-### `darwin-breeze` + `helium` (theme and colors)
+`*/` matches every package in the group. Each line runs in a subshell, so you stay in the repo root and can run them one after another. KDE needs a few more steps after this. They're in [`kde/README.md`](kde/README.md).
 
-The Darwin Breeze Dark KDE color scheme and global theme, and the Helium, T3
-Code, Ghostty, VS Code and Telegram themes generated from it. After stowing, apply it
-once (Telegram imports its theme by hand):
+### Picking packages
+
+You don't have to install everything. List only the packages you want:
 
 ```sh
-./darwin-breeze/apply.sh
+stow -d common -t "$HOME" git zsh starship
+stow -d mac -t "$HOME" ghostty
+stow -d kde -t "$HOME" spectacle fastfetch
 ```
 
-To change colors, edit `DarwinBreezeDark.colors` and run `apply.sh` again; see
-[`darwin-breeze/README.md`](darwin-breeze/README.md).
+`-d` tells Stow which group to read from. `-t` puts the symlinks in your home directory. You can mix packages from different groups. Fastfetch is the exception. Install `mac/fastfetch` or `kde/fastfetch`, never both.
 
-### `tray-icons` (tray icons that match Breeze)
+### Previewing and removing
 
-Some icons need an extra step after `stow tray-icons` (a root step for
-Ngó Sen); see [`tray-icons/README.md`](tray-icons/README.md).
+`-n -v` prints what Stow would do and changes nothing. `-D` removes the symlinks. Pass the same `-d` and `-t` you used to install:
 
-## Credit
+```sh
+stow -n -v -d kde -t "$HOME" spectacle
+stow -D -d kde -t "$HOME" spectacle
+```
+
+Once the Zsh config is linked, run `exec zsh` to reload the shell.
+
+## Credits
 
 - [Machfiles](https://github.com/ChristianChiarulli/Machfiles/)
 - [zsh_unplugged](https://github.com/mattmc3/zsh_unplugged)

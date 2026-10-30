@@ -1,0 +1,80 @@
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+    "display": {
+        "key": {
+            "width": 10
+        },
+        "size": {
+            "binaryPrefix": "jedec"
+        },
+        "separator": ""
+    },
+    "logo": {
+        "type": "raw",
+        "source": "~/.config/fastfetch/albedo-konsole.kitty",
+        "width": 20,
+        "height": 10
+    },
+    "modules": [
+        "break",
+        {
+            "type": "os",
+            "key": "os",
+            "keyColor": "yellow",
+            "format": "{name}"
+        },
+        {
+            "type": "kernel",
+            "key": "ker",
+            "keyColor": "green"
+        },
+        {
+            "type": "packages",
+            "key": "pkgs",
+            "keyColor": "cyan"
+        },
+        {
+            "type": "shell",
+            "key": "sh",
+            "keyColor": "blue",
+            "format": "{pretty-name}"
+        },
+        {
+            "type": "wm",
+            "key": "wm",
+            "keyColor": "red",
+            "format": "{pretty-name}"
+        },
+        {
+            "type": "uptime",
+            "key": "up",
+            "keyColor": "green"
+        },
+        {
+            "type": "cpu",
+            "key": "cpu",
+            "keyColor": "red",
+            "format": "{name}"
+        },
+        {
+            "type": "memory",
+            "key": "ram",
+            "keyColor": "yellow",
+            "format": "{used} / {total}"
+        },
+        {
+            "type": "disk",
+            "key": "disk",
+            "keyColor": "cyan",
+            "folders": [
+                "/"
+            ],
+            "format": "{size-used} / {size-total}"
+        },
+        "break",
+        {
+            "type": "custom",
+            "format": "\u001b[33m󰮯 \u001b[32m󰊠 \u001b[34m󰊠 \u001b[31m󰊠 \u001b[36m󰊠 \u001b[35m󰊠 \u001b[37m󰊠 \u001b[97m󰊠"
+        }
+    ]
+}

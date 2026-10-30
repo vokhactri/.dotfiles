@@ -1,0 +1,8 @@
+^/README.*
+^/\.gitignore
+^/apply\.sh
+^/build\.py
+^/t3
+^/telegram
+^/vscode
+__pycache__

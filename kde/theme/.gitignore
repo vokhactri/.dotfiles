@@ -1,0 +1,4 @@
+__pycache__/
+# Binary packages built by build.py.
+*.vsix
+*.tdesktop-theme

@@ -1,0 +1,3 @@
+^/README.*
+^/build\.py
+__pycache__
