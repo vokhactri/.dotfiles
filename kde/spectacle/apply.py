@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+from typing import Any
 
 
 HERE = Path(__file__).resolve().parent
@@ -14,11 +15,11 @@ COMPONENT = "org.kde.spectacle.desktop"
 ACCEL = "/component/org_kde_spectacle_desktop"
 
 
-def run(*args, **kwargs):
+def run(*args: str, **kwargs: Any) -> subprocess.CompletedProcess[str]:
     return subprocess.run(args, check=True, text=True, **kwargs)
 
 
-def accel(path, method, *args):
+def accel(path: str, method: str, *args: str) -> str:
     return run(
         "gdbus", "call", "--session", "--dest", "org.kde.kglobalaccel",
         "--object-path", path, "--method", method, *args,
@@ -26,10 +27,10 @@ def accel(path, method, *args):
     ).stdout
 
 
-def main():
+def main() -> None:
     for name in ("spectaclerc", "klipperrc"):
         config = configparser.ConfigParser(interpolation=None)
-        config.optionxform = str
+        config.optionxform = str  # type: ignore[method-assign,assignment]
         config.read(HERE / "settings" / name)
         for group in config.sections():
             for key, value in config[group].items():
@@ -38,7 +39,7 @@ def main():
 
     # T3's locale and XDG_DATA_DIRS can differ from the running KDE session.
     # Build the cache KDE actually reads, rather than an app-specific cache.
-    session = dict(
+    session: dict[str, str] = dict(
         line.split("=", 1) for line in
         run("systemctl", "--user", "show-environment", capture_output=True)
         .stdout.splitlines() if "=" in line
@@ -61,7 +62,7 @@ def main():
     try:
         output = accel(ACCEL, "org.kde.kglobalaccel.Component.allShortcutInfos")
     except subprocess.CalledProcessError:
-        shortcuts = []  # Component has not been registered yet.
+        shortcuts: list[Any] = []  # Component has not been registered yet.
     else:
         shortcuts = ast.literal_eval(re.sub(r"@a[is] ", "", output))[0]
         accel(ACCEL, "org.kde.kglobalaccel.Component.cleanUp")
