@@ -30,7 +30,7 @@ COLS, ROWS = 20, 10
 KONSOLE_CELL = 8, 17
 
 
-def encode(png, dst):
+def encode(png: bytes, dst: Path) -> None:
     data = base64.b64encode(png)
     chunks = [data[i : i + 4096] for i in range(0, len(data), 4096)]
     out = bytearray()
@@ -44,7 +44,7 @@ def encode(png, dst):
     dst.write_bytes(out)
 
 
-def resize(width, height):
+def resize(width: int, height: int) -> bytes:
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "out.png"
         subprocess.run(
