@@ -1,0 +1,12 @@
+/* Helium (Chromium) with its GTK theme. Chromium adds a "chromium" class to
+   every node of the GTK style contexts it reads colors from, so these rules
+   reach Helium and no other GTK app.
+
+   In the compact layout, the address bar takes the text field color and the
+   segment with the extension and window buttons takes the window color,
+   which Chromium resolves to the darker view color. Both get the title bar
+   color, so the strip reads as one bar like a KDE title bar. */
+window.background.chromium,
+textview.view.chromium {
+  background-color: @theme_bg_color_breeze;
+}

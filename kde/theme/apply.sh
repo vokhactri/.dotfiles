@@ -21,6 +21,21 @@ plasma-apply-lookandfeel --apply dev.trivk.darwinbreeze.dark
 plasma-apply-colorscheme BreezeClassic >/dev/null
 plasma-apply-colorscheme DarwinBreezeDark >/dev/null
 
+# kde-gtk-config writes gtk.css; add our imports to it.
+gtk_import() {
+    local css="${XDG_CONFIG_HOME:-$HOME/.config}/$1/gtk.css"
+    if [ -e "$css" ] && ! grep -qF "'$2'" "$css"; then
+        sed -i "\$a @import '$2';" "$css"
+    fi
+}
+# kde-gtk-config gives GTK apps the KWin title buttons through a GTK module,
+# which Helium doesn't load, so it would fall back to Breeze GTK's own
+# buttons. Importing the same CSS from gtk.css reaches Helium too.
+gtk_import gtk-3.0 window_decorations.css
+gtk_import gtk-4.0 window_decorations.css
+# Helium's tab strip colors (see chromium.css).
+gtk_import gtk-3.0 chromium.css
+
 # Drop the line under the title bar so it blends into the toolbar.
 kwriteconfig6 --file breezerc --group Windeco --key DrawTitleBarSeparator false
 
@@ -45,5 +60,5 @@ fi
 
 echo "Applied Darwin Breeze"
 if pgrep -x helium >/dev/null; then
-    echo "Restart Helium to pick up its theme"
+    echo "Restart Helium to pick up the new colors"
 fi
