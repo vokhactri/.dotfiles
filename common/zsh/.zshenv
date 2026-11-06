@@ -5,3 +5,6 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
 ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+
+# Per-machine settings that stay out of the repo, like PATH entries for a VPS.
+[ -r "$XDG_CONFIG_HOME/zshenv.local" ] && . "$XDG_CONFIG_HOME/zshenv.local"
