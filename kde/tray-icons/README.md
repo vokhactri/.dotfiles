@@ -31,6 +31,29 @@ systemctl --user restart plasma-plasmashell
 - On KDE Wayland don't start fcitx5 with `fcitx5 -d`; use
   `restart-fcitx5.sh` so KWin launches it.
 
+## NetBird (netbird-ui)
+
+Scales NetBird's tray icons down to 80% so they get the padding of Breeze
+status icons, and draws the white ones in the panel's text color
+(`#dedede`) instead of pure white.
+
+```sh
+sudo ~/.local/share/netbird-breeze-icons/install.sh
+pkill -x netbird-ui; setsid -f netbird-ui --daemon-addr unix:///var/run/netbird/main.sock >/dev/null 2>&1
+```
+
+- NetBird sends the tray icon as raw pixels, not an icon name, so an icon
+  theme can't replace it. `patch.py` rewrites the 48x48 PNGs embedded in
+  `/usr/bin/netbird-ui` in place instead; each new PNG fits in the bytes
+  of the old one.
+- `install.sh` copies `patch.py` and `apply.sh` to
+  `/usr/local/share/netbird-breeze-icons/` and installs the pacman hook
+  `/etc/pacman.d/hooks/netbird-breeze-icons.hook` to re-patch the binary
+  after every `netbird-ui`/`netbird-ui-bin` upgrade.
+- The original binary is kept in `/usr/local/share/netbird-breeze-icons/orig/`;
+  `sudo ~/.local/share/netbird-breeze-icons/restore.sh` puts it back and
+  removes the hook.
+
 ## qBittorrent
 
 `qbittorrent-tray-mono.svg` is qBittorrent's monochrome tray icon scaled

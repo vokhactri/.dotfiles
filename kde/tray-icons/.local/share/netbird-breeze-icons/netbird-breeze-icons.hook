@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = netbird-ui
+Target = netbird-ui-bin
+
+[Action]
+Description = Patching NetBird tray icons to match Breeze...
+When = PostTransaction
+Exec = /usr/local/share/netbird-breeze-icons/apply.sh
