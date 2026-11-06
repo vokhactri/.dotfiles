@@ -11,9 +11,9 @@ cd "$HOME/.dotfiles"
 
 The packages are split into three groups:
 
-- [common/](common/README.md) has Git, Micro, mpv, npm, Starship and Zsh.
-- [mac/](mac/README.md) has Ghostty and the original Fastfetch config.
-- [kde/](kde/README.md) has the Darwin Breeze theme, Helium, Konsole Fastfetch, Spectacle and tray icons.
+- [common/](common/README.md) has Fastfetch, Git, Micro, mpv, npm, Starship and Zsh.
+- [mac/](mac/README.md) has Ghostty.
+- [kde/](kde/README.md) has the Darwin Breeze theme, Helium, Spectacle and tray icons.
 
 Install all of `common`, then the group for your platform:
 
@@ -32,10 +32,10 @@ You don't have to install everything. List only the packages you want:
 ```sh
 stow -d common -t "$HOME" git zsh starship
 stow -d mac -t "$HOME" ghostty
-stow -d kde -t "$HOME" spectacle fastfetch
+stow -d kde -t "$HOME" spectacle
 ```
 
-`-d` tells Stow which group to read from. `-t` puts the symlinks in your home directory. You can mix packages from different groups. Fastfetch is the exception. Install `mac/fastfetch` or `kde/fastfetch`, never both.
+`-d` tells Stow which group to read from. `-t` puts the symlinks in your home directory. You can mix packages from different groups.
 
 ### Previewing and removing
 

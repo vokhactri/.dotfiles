@@ -11,7 +11,7 @@
     },
     "logo": {
         "type": "raw",
-        "source": "~/.config/fastfetch/albedo-konsole.kitty",
+        "source": "~/.config/fastfetch/albedo.kitty",
         "width": 20,
         "height": 10
     },

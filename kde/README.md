@@ -9,14 +9,13 @@ From the repository root, install all KDE packages:
 Or choose individual packages:
 
 ```sh
-stow -d kde -t "$HOME" spectacle fastfetch
+stow -d kde -t "$HOME" spectacle helium
 ```
 
 | Package                            | Details                                                  |
 | ---------------------------------- | -------------------------------------------------------- |
 | [theme](theme/README.md)           | Darwin Breeze KDE colors and generated app themes        |
 | [helium](helium/README.md)         | Browser flags; colors come from GTK                      |
-| [fastfetch](fastfetch/README.md)   | Konsole configuration and a pre-scaled inline image logo |
 | [spectacle](spectacle/README.md)   | Screenshots to clipboard with a notification, no preview |
 | [tray-icons](tray-icons/README.md) | Ngó Sen and qBittorrent tray icons                       |
 
@@ -33,5 +32,4 @@ The apply scripts require a running KDE Plasma 6 session. Ngó Sen icons need
 an additional install step described in the tray-icons README.
 
 Packages can be selected independently; Helium follows the Darwin Breeze
-colors only when the theme is applied. Choose either `kde/fastfetch` or
-`mac/fastfetch`; both own `~/.config/fastfetch/`.
+colors only when the theme is applied.

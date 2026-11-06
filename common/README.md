@@ -1,6 +1,6 @@
 # Common packages
 
-Shared configuration for Git, Micro, mpv, npm, Starship, and Zsh.
+Shared configuration for Fastfetch, Git, Micro, mpv, npm, Starship, and Zsh.
 From the repository root, install all shared packages:
 
 ```sh
@@ -14,5 +14,5 @@ stow -d common -t "$HOME" git
 stow -d common -t "$HOME" zsh starship
 ```
 
-Choose any of `git`, `micro`, `mpv`, `npm`, `starship`, and `zsh`.
+Choose any of `fastfetch`, `git`, `micro`, `mpv`, `npm`, `starship`, and `zsh`.
 Reload Zsh with `exec zsh` after installing its configuration.
