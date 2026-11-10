@@ -5,7 +5,7 @@ These are my config files for macOS and KDE, managed with GNU Stow. You need `st
 ## Installation
 
 ```sh
-git clone https://git.trivk.dev/tri/.dotfiles.git "$HOME/.dotfiles"
+git clone git@ssh.trivk.dev:tri/.dotfiles.git "$HOME/.dotfiles"
 cd "$HOME/.dotfiles"
 ```
 
