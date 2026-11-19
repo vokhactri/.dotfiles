@@ -46,3 +46,11 @@ for bin_path in "${bin_paths[@]}"; do
         esac
     fi
 done
+
+# Kiri on macOS ships the `docker` and `kiri` commands in this folder.
+if [[ -d "$HOME/.kiri/bin" ]]; then
+    case ":$PATH:" in
+        *":$HOME/.kiri/bin:"*) ;;
+        *) path+=("$HOME/.kiri/bin") ;;
+    esac
+fi

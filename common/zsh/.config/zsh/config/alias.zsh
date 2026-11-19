@@ -10,11 +10,3 @@ alias fetch='fastfetch'
 
 # Global alias
 alias \-g -- --help="--help | bat -plhelp"
-
-docker() {
-    if command -v podman >/dev/null 2>&1; then
-        podman "$@"
-    else
-        command docker "$@"
-    fi
-}
