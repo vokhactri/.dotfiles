@@ -23,8 +23,10 @@ systemctl --user restart plasma-plasmashell
 - `install.sh` copies the icons and `apply.sh` to
   `/usr/local/share/ngosen-breeze-icons/`, installs the pacman hook
   `/etc/pacman.d/hooks/ngosen-breeze-icons.hook` to re-apply them after
-  every package upgrade, and sets `UseLotusIcons=False` and
-  `IconTheme=Dark` in `~/.config/fcitx5/conf/ngosen.conf`.
+  every package upgrade, and sets `TrayIconKind="V / E"` and
+  `IconTheme=Dark` in `~/.config/fcitx5/conf/ngosen.conf` (Ngó Sen 1.14
+  replaced `UseLotusIcons` with `TrayIconKind`, which defaults to the
+  colour icon).
 - The original icons are kept in `/usr/local/share/ngosen-breeze-icons/orig/`;
   `sudo ~/.local/share/ngosen-breeze-icons/restore.sh` puts them back and
   removes the hook.
